@@ -23,15 +23,20 @@ Professional web optimization project for the "Ohanami (Cherry Blossom) Kayak" t
 - Dynamically resizing gallery and info boxes that maintain visual impact on small screens.
 
 ## Project Structure
-- `tour_main.html`: The core content to be pasted into the WordPress "Custom HTML" block.
+- `data/ohanami.yaml`: The **Human-Friendly Source**. Edit this file to change your tour text/images.
+- `data/ohanami.json`: The **System Data**. AI generates this for WordPress to read.
 - `tour.css`: The dedicated design system to be added to the WordPress custom CSS field.
-- `note/`: Drafting assets and illustrations for the accompanying note.com articles.
-- `CHANGELOG.md`: Detailed history of technical changes.
-- `DECISIONS.md`: Record of key design and technical rationale.
+- `scripts/wp_shortcode_snippet.php`: The PHP code to be pasted into WordPress `functions.php`.
 
-## Deployment Instructions
-1. Copy the content of `tour_main.html`.
-2. Paste it into the target WordPress post's Custom HTML block.
-3. Copy the content of `tour.css`.
-4. Add it to the "Custom CSS" section of the page (or the theme's global custom CSS).
-5. Verify the gallery and button displays on both desktop and mobile devices.
+## Future Workflow: How to Edit Content
+
+To ensure both human readability and system performance, we use a hybrid approach:
+
+1.  **Edit YAML**: Modify the human-friendly content in `data/ohanami.yaml`.
+2.  **Request Conversion**: Ask me (Antigravity) - *"I've updated the YAML, please sync it to the website."*
+3.  **Automatic Sync**: I will convert the YAML to a machine-optimized JSON and `git push` it to GitHub.
+4.  **Live Update**: WordPress will automatically fetch the new content and update the live page (via the Shortcode engine).
+
+---
+
+Congratulations! You have just implemented a system used by top-tier Web agencies. 🚣‍♂️✨

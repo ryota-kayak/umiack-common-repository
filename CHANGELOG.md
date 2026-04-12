@@ -2,6 +2,12 @@
 
 All notable changes to the "Cherry Blossom Kayak" project will be documented in this file.
 
+## [1.1.0] - 2026-04-12
+
+### Changed
+- Renamed the main content file from `本文.html` to `tour_main.html` for technical naming consistency.
+- Updated all references in `README.md`.
+
 ## [1.0.0] - 2026-04-12
 
 ### Added

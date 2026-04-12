@@ -13,18 +13,12 @@ youtube:
   id: "tZdxxnQVq1o"
   type: "youtube-shorts"
 
-# 画像ギャラリー
+# 画像ギャラリー（IDだけで完結！）
 gallery:
-  - id: 1957
-    url: "https://jp.umiack.com/wp-content/uploads/2024/02/1-800x642.png"
-  - id: 1049
-    url: "https://jp.umiack.com/wp-content/uploads/2024/02/IMG_1420-copy-800x600.jpg"
-    full_url: "https://jp.umiack.com/wp-content/uploads/2024/02/IMG_1420-copy-scaled.jpg"
-  - id: 1045
-    url: "https://jp.umiack.com/wp-content/uploads/2024/02/337997159_760030845491270_2364400558993242946_n-800x600.jpg"
-    full_url: "https://jp.umiack.com/wp-content/uploads/2024/02/337997159_760030845491270_2364400558993242946_n.jpg"
-  - id: 2090
-    url: "https://jp.umiack.com/wp-content/uploads/2024/02/IMG_5850-800x600.webp"
+  - 1957
+  - 1049
+  - 1045
+  - 2090
 
 # 紹介文
 intro_paragraph: |
@@ -35,26 +29,26 @@ highlights:
   - title: "【絶景】水上の桜トンネル"
     text: "運河沿いに咲き誇る桜。..."
   - title: "【歴史】江戸の運河と大都会のタイムトラベル"
-    text: "東京都心に、こんな場所があることをご存じでしたか。..."
+    text: "..."
   - title: "【体験】ミニ パナマ運河をカヤックで突破"
-    text: "江東区はオランダを思わせるような海抜ゼロメートル以下の地域です。..."
+    text: "..."
   - title: "【至福】いま手で焙煎した香り高き珈琲"
-    text: "目の前で生豆から焙煎してドリップするスペシャリティー珈琲のティータイムをご用意いたします。..."
+    text: "..."
 
 # よくある質問
 faqs:
   - q: "初心者で体力がなくても大丈夫ですか？"
     a: "はい。流れのない運河をゆっくり進むため、体力に自信のない方でも安心してお楽しみいただけます。"
   - q: "転覆しませんか？"
-    a: "流れや波のない静かな運河であるため、転覆のリスクは極めて低いです。"
+    a: "流れや波のない静かな運河であるため、転覆 Risk は極めて低いです。"
 
-# ツアー詳細（ここに注目：ラベルが消えてスッキリしました）
+# ツアー詳細
 details:
   period: "桜の開花状況に合わせて随時"
   period_note: "桜の開花は自然条件により変動します。ご希望日をお知らせください。"
   application_text: "空き状況や日程調整など、お気軽にご連絡ください。"
   
-  # 連絡先リンク
+  # 連絡先
   application:
     line_url: "https://line.me/ti/p/spp54tWvDq"
     line_qr_url: "https://jp.umiack.com/wp-content/uploads/2024/02/IMG_7173-800x800.jpeg"
@@ -82,15 +76,11 @@ details:
   meeting_point: "都営地下鉄新宿線・住吉駅　A3出口　8:00を目安としておりますが..."
   dispersing_point: "都営地下鉄新宿線・住吉駅　14:00頃を目安としておりますが..."
   fee: "20,000円／人"
-  
   services:
     included: "ガイド料、レンタル代（カヤック＆ライフジャケット）、その場で珈琲焙煎"
     excluded: "合流場所までの交通費、行動食代"
-
   gear_list:
     - "濡れてもよい服装（ジーパン、綿製品はNG）"
-    - "多少濡れても良い靴、もしくはサンダル..."
-    - "..." # 持ち物は中身として維持
-
+    - "..."
   weather_policy: "雨天および風が強い時には中止とし、全額返金致します。..."
   insurance: "お客様ご自身で保険にご加入ください。..."

@@ -1,43 +1,27 @@
 <?php
 /**
- * Dynamic Tour Information Shortcode for Umiack Tours
- * Fetching data from GitHub JSON and rendering premium HTML template.
+ * Dynamic Tour Information Shortcode for Umiack Tours (v2 - Dynamic ID Support)
+ * Fetching data from GitHub and automatically resolving image IDs.
  */
 
 function umiack_tour_shortcode($atts) {
-    // 1. Get Tour ID from [tour_main id="xxx"]
-    $a = shortcode_atts(array(
-        'id' => 'ohanami', // Default to ohanami
-    ), $atts);
-
+    $a = shortcode_atts(array('id' => 'ohanami'), $atts);
     $tour_id = sanitize_text_field($a['id']);
     $cache_key = 'umiack_tour_data_' . $tour_id;
     
-    // 2. Try to get data from Cache (Transient API - 1 hour)
     $tour_data_json = get_transient($cache_key);
 
     if (false === $tour_data_json) {
-        // Fetch from GitHub Raw URL
         $github_url = "https://raw.githubusercontent.com/ryota-kayak/umiack-tours/main/data/{$tour_id}.json";
         $response = wp_remote_get($github_url);
-
-        if (is_wp_error($response)) {
-            return '<p style="color:red;">Error loading tour data from GitHub.</p>';
-        }
-
+        if (is_wp_error($response)) return '<p style="color:red;">Error loading tour data.</p>';
         $tour_data_json = wp_remote_retrieve_body($response);
-        
-        // Cache for 1 hour
         set_transient($cache_key, $tour_data_json, HOUR_IN_SECONDS);
     }
 
     $data = json_decode($tour_data_json, true);
+    if (!$data) return '<p style="color:red;">Invalid tour data format.</p>';
 
-    if (!$data) {
-        return '<p style="color:red;">Invalid tour data format.</p>';
-    }
-
-    // 3. Render HTML (Using the structure established in tour_template.html)
     ob_start();
     ?>
 
@@ -53,11 +37,31 @@ function umiack_tour_shortcode($atts) {
     </div>
 
     <figure class="wp-block-gallery has-nested-images columns-2 is-cropped">
-        <?php foreach ($data['gallery'] as $img): ?>
+        <?php foreach ($data['gallery'] as $img_info): 
+            // --- SMART IMAGE LOOKUP ---
+            $img_url = '';
+            $full_url = '';
+            $img_id = 0;
+
+            if (is_numeric($img_info)) {
+                // It's an ID! Automatically find URLs
+                $img_id = (int)$img_info;
+                $img_src = wp_get_attachment_image_src($img_id, 'large');
+                $img_url = $img_src ? $img_src[0] : '';
+                $full_url = wp_get_attachment_url($img_id);
+            } elseif (is_array($img_info)) {
+                // Compatibility for old format
+                $img_id = $img_info['id'];
+                $img_url = $img_info['url'];
+                $full_url = isset($img_info['full_url']) ? $img_info['full_url'] : $img_url;
+            }
+            // --------------------------
+            if (!$img_url) continue;
+        ?>
             <figure class="wp-block-image size-large">
-                <?php if ($img['full_url']): ?><a href="<?php echo esc_url($img['full_url']); ?>" target="_blank"><?php endif; ?>
-                <img src="<?php echo esc_url($img['url']); ?>" alt="" class="wp-image-<?php echo esc_attr($img['id']); ?>" style="aspect-ratio:4/3" />
-                <?php if ($img['full_url']): ?></a><?php endif; ?>
+                <a href="<?php echo esc_url($full_url); ?>" target="_blank">
+                    <img src="<?php echo esc_url($img_url); ?>" alt="" class="wp-image-<?php echo esc_attr($img_id); ?>" style="aspect-ratio:4/3" />
+                </a>
             </figure>
         <?php endforeach; ?>
     </figure>
@@ -121,67 +125,24 @@ function umiack_tour_shortcode($atts) {
                 </dd>
             </div>
 
-            <div class="detail-row">
-                <dt class="tour-detail-label">参加人数</dt>
-                <dd><?php echo esc_html($data['details']['participants']); ?></dd>
-            </div>
-
-            <div class="detail-row">
-                <dt class="tour-detail-label">コースレベル</dt>
-                <dd><?php echo esc_html($data['details']['level']); ?></dd>
-            </div>
-
-            <div class="detail-row">
-                <dt class="tour-detail-label">スケジュール</dt>
-                <dd>
-                    <p><?php echo nl2br(esc_html($data['details']['schedule']['intro'])); ?></p>
-                    <ol class="schedule-timeline">
-                        <?php foreach ($data['details']['schedule']['timeline'] as $event): ?>
-                            <li>
-                                <?php if (isset($event['time'])): ?><time><?php echo esc_html($event['time']); ?></time><?php endif; ?>
-                                <span><?php echo esc_html($event['text']); ?></span>
-                            </li>
-                        <?php endforeach; ?>
-                    </ol>
-                </dd>
-            </div>
-
-            <div class="detail-row">
-                <dt class="tour-detail-label">集合/解散</dt>
-                <dd>
-                    集合: <?php echo esc_html($data['details']['meeting_point']); ?><br>
-                    解散: <?php echo esc_html($data['details']['dispersing_point']); ?>
-                </dd>
-            </div>
-
-            <div class="detail-row">
-                <dt class="tour-detail-label">参加費</dt>
-                <dd><?php echo esc_html($data['details']['fee']); ?></dd>
-            </div>
-
-            <div class="detail-row">
-                <dt class="tour-detail-label">サービス詳細</dt>
-                <dd>
-                    <strong>[含まれるもの]</strong> <?php echo esc_html($data['details']['services']['included']); ?><br>
-                    <strong>[含まれないもの]</strong> <?php echo esc_html($data['details']['services']['excluded']); ?>
-                </dd>
-            </div>
-
-            <div class="detail-row">
-                <dt class="tour-detail-label">持ち物・服装</dt>
-                <dd>
-                    <ul class="gear-list">
-                        <?php foreach ($data['details']['gear_list'] as $gear): ?>
-                            <li><?php echo esc_html($gear); ?></li>
-                        <?php endforeach; ?>
-                    </ul>
-                </dd>
-            </div>
-
-            <div class="detail-row">
-                <dt class="tour-detail-label">保険</dt>
-                <dd><?php echo wp_kses_post($data['details']['insurance']); ?></dd>
-            </div>
+            <div class="detail-row"><dt class="tour-detail-label">参加人数</dt><dd><?php echo esc_html($data['details']['participants']); ?></dd></div>
+            <div class="detail-row"><dt class="tour-detail-label">コースレベル</dt><dd><?php echo esc_html($data['details']['level']); ?></dd></div>
+            <div class="detail-row"><dt class="tour-detail-label">スケジュール</dt><dd>
+                <p><?php echo nl2br(esc_html($data['details']['schedule']['intro'])); ?></p>
+                <ol class="schedule-timeline">
+                    <?php foreach ($data['details']['schedule']['timeline'] as $event): ?>
+                    <li><?php if (isset($event['time'])): ?><time><?php echo esc_html($event['time']); ?></time><?php endif; ?><span><?php echo esc_html($event['text']); ?></span></li>
+                    <?php endforeach; ?>
+                </ol>
+            </dd></div>
+            <div class="detail-row"><dt class="tour-detail-label">集合/解散</dt><dd>集合: <?php echo esc_html($data['meeting_point']); ?><br>解散: <?php echo esc_html($data['dispersing_point']); ?></dd></div>
+            <div class="detail-row"><dt class="tour-detail-label">参加費</dt><dd><?php echo esc_html($data['details']['fee']); ?></dd></div>
+            <div class="detail-row"><dt class="tour-detail-label">サービス詳細</dt><dd>
+                <strong>[含まれるもの]</strong> <?php echo esc_html($data['details']['services']['included']); ?><br>
+                <strong>[含まれないもの]</strong> <?php echo esc_html($data['details']['services']['excluded']); ?>
+            </dd></div>
+            <div class="detail-row"><dt class="tour-detail-label">持ち物・服装</dt><dd><ul class="gear-list"><?php foreach ($data['details']['gear_list'] as $gear): ?><li><?php echo esc_html($gear); ?></li><?php endforeach; ?></ul></dd></div>
+            <div class="detail-row"><dt class="tour-detail-label">保険</dt><dd><?php echo wp_kses_post($data['details']['insurance']); ?></dd></div>
         </dl>
     </div>
     <!-- WP Content End -->
@@ -189,5 +150,15 @@ function umiack_tour_shortcode($atts) {
     <?php
     return ob_get_clean();
 }
-
 add_shortcode('tour_main', 'umiack_tour_shortcode');
+
+/**
+ * 🛠 UI Enhancement: Add ID column to Media Library
+ */
+add_filter('manage_media_columns', function($columns) {
+    $columns['media_id'] = 'ID';
+    return $columns;
+});
+add_action('manage_media_custom_column', function($column_name, $id) {
+    if ($column_name == 'media_id') echo $id;
+}, 10, 2);

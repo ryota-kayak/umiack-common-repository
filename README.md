@@ -24,7 +24,7 @@ Professional web optimization project for the "Ohanami (Cherry Blossom) Kayak" t
 
 ## Project Structure
 - `tour_main.html`: The core content to be pasted into the WordPress "Custom HTML" block.
-- `東京運河でお花見カヤックツアー.css`: The dedicated design system to be added to the WordPress custom CSS field.
+- `tour.css`: The dedicated design system to be added to the WordPress custom CSS field.
 - `note/`: Drafting assets and illustrations for the accompanying note.com articles.
 - `CHANGELOG.md`: Detailed history of technical changes.
 - `DECISIONS.md`: Record of key design and technical rationale.
@@ -32,6 +32,6 @@ Professional web optimization project for the "Ohanami (Cherry Blossom) Kayak" t
 ## Deployment Instructions
 1. Copy the content of `tour_main.html`.
 2. Paste it into the target WordPress post's Custom HTML block.
-3. Copy the content of `東京運河でお花見カヤックツアー.css`.
+3. Copy the content of `tour.css`.
 4. Add it to the "Custom CSS" section of the page (or the theme's global custom CSS).
 5. Verify the gallery and button displays on both desktop and mobile devices.

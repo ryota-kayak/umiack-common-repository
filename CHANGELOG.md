@@ -2,6 +2,12 @@
 
 All notable changes to the "Cherry Blossom Kayak" project will be documented in this file.
 
+## [1.2.0] - 2026-04-12
+
+### Changed
+- Renamed the CSS file from `東京運河でお花見カヤックツアー.css` to `tour.css` for technical naming consistency.
+- Updated all references in `README.md`.
+
 ## [1.1.0] - 2026-04-12
 
 ### Changed

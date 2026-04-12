@@ -88,19 +88,19 @@ function umiack_tour_shortcode($atts) {
     <div class="tour-info-box">
         <dl class="tour-detail-list">
             <div class="detail-row">
-                <dt class="tour-detail-label"><?php echo esc_html($data['details']['period']['label']); ?></dt>
+                <dt class="tour-detail-label"><?php echo ($data['language'] === 'en' ? 'Season' : '募集時期'); ?></dt>
                 <dd>
-                    <?php echo esc_html($data['details']['period']['value']); ?><br>
-                    <?php if ($data['details']['period']['note']): ?>
-                        <span class="detail-note"><?php echo esc_html($data['details']['period']['note']); ?></span>
+                    <?php echo esc_html($data['details']['period']); ?><br>
+                    <?php if (isset($data['details']['period_note'])): ?>
+                        <span class="detail-note"><?php echo esc_html($data['details']['period_note']); ?></span>
                     <?php endif; ?>
                 </dd>
             </div>
 
             <div class="detail-row">
-                <dt class="tour-detail-label"><?php echo esc_html($data['details']['application']['label']); ?></dt>
+                <dt class="tour-detail-label"><?php echo ($data['language'] === 'en' ? 'Booking' : '申し込み'); ?></dt>
                 <dd>
-                    <?php echo esc_html($data['details']['application']['text']); ?>
+                    <?php echo esc_html($data['details']['application_text']); ?>
                     <div class="application-flex-container">
                         <div class="app-item app-line">
                             <a href="<?php echo esc_url($data['details']['application']['line_url']); ?>" class="btn-line">LINEでご相談</a>

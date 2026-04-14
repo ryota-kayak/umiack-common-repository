@@ -81,8 +81,10 @@
   color: #333;
   padding: 1.5em 1.8em;
   margin: 2em 0;
-  background-color: #f7fbfc; /* 極めて淡い水色 */
-  border-left: 2px solid #00acc1; /* 線を細く */
+  background-color: #f7fbfc;
+  /* 極めて淡い水色 */
+  border-left: 2px solid #00acc1;
+  /* 線を細く */
   border-radius: 0 4px 4px 0;
 }
 
@@ -243,10 +245,12 @@
   color: #fff !important;
   box-shadow: 0 4px 12px rgba(69, 90, 100, 0.2);
   display: flex !important;
-  flex-direction: column !important; /* 上下に並べる */
+  flex-direction: column !important;
+  /* 上下に並べる */
   align-items: center;
   justify-content: center;
-  padding: 10px 24px !important; /* 上下のパディングを調整 */
+  padding: 10px 24px !important;
+  /* 上下のパディングを調整 */
 }
 
 .btn-main-text {
@@ -259,7 +263,8 @@
   font-size: 0.85em;
   opacity: 0.9;
   margin-top: 2px;
-  font-family: monospace; /* 番号を読みやすく */
+  font-family: monospace;
+  /* 番号を読みやすく */
 }
 
 /* 電話アイコンを追加（ボタン用） */
@@ -423,13 +428,6 @@
   margin-left: 0;
   color: #333;
   line-height: 1.7;
-}
-
-.detail-note {
-  font-size: 0.85em;
-  color: #666;
-  display: inline-block;
-  margin-top: 0.5em;
 }
 
 /* スケジュール (ol.schedule-timeline) */

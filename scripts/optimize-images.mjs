@@ -69,6 +69,7 @@ async function optimizeImages() {
         const webpDistPath = path.join(tourDistDir, webpName);
         
         await sharp(srcPath)
+          .rotate()
           .resize(size, null, { withoutEnlargement: true })
           .webp({ quality: 80 })
           .toFile(webpDistPath);
@@ -78,6 +79,7 @@ async function optimizeImages() {
         const jpgDistPath = path.join(tourDistDir, jpgName);
         
         await sharp(srcPath)
+          .rotate()
           .resize(size, null, { withoutEnlargement: true })
           .jpeg({ quality: 80 })
           .toFile(jpgDistPath);

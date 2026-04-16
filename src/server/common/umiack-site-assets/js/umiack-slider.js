@@ -1,7 +1,7 @@
 /**
- * Umiack Slider - Professional Edition
- * Optimized for performance, stability, and responsive images.
- * Works seamlessly with WordPress REST API to fetch best-fit image sizes.
+ * Umiack Slider - Professional Edition (v2.0)
+ * Optimized for performance, stability, and local responsive images.
+ * Works with build-time generated manifests for instant loading.
  */
 (function () {
   'use strict';
@@ -9,7 +9,7 @@
   // Prevent multiple initializations
   if (window.UmiackSliderInitialized) return;
 
-  const init = () => {
+  const init = async () => {
     // --- 1. DOM Elements (Main Slider) ---
     const WID = document.getElementById('slider-main');
     const MID = document.getElementById('umiack-modal');
@@ -20,7 +20,6 @@
     WID.classList.add('umiack-initialized');
 
     const track = WID.querySelector('.umiack-slides');
-    const slideEls = WID.querySelectorAll('.umiack-slide');
     const dotsWrap = WID.querySelector('.umiack-dots');
     const btnPrev = WID.querySelector('.umiack-btn-prev');
     const btnNext = WID.querySelector('.umiack-btn-next');
@@ -33,38 +32,97 @@
     const modalClose = MID.querySelector('.umiack-btn-close');
     const modalCount = MID.querySelector('.umiack-modal-counter');
 
-    if (!track || slideEls.length === 0) return;
+    if (!track) return;
 
     // --- 3. State Management ---
-    const total = slideEls.length;
+    let total = 0;
     let current = 0;
     let modalCurrent = 0;
     const images = [];
 
-    // --- 4. Initialize Image Data ---
-    slideEls.forEach((el) => {
-      const img = el.querySelector('img');
-      let src = (img && (img.getAttribute('data-src') || img.src)) || '';
-      const alt = (img && img.alt) || '';
-
-      // Extracting URL from noscript if image is lazy-loaded by theme
-      if (!src) {
-        const noscript = el.querySelector('noscript');
-        if (noscript) {
-          const html = noscript.textContent || noscript.innerHTML;
-          const start = html.indexOf('src="');
-          if (start > -1) {
-            const sub = html.substring(start + 5);
-            const end = sub.indexOf('"');
-            if (end > -1) src = sub.substring(0, end);
-          }
+    // --- 4. Dynamic Loading (Manifest Strategy) ---
+    const tourId = WID.getAttribute('data-tour');
+    if (tourId) {
+      try {
+        const response = await fetch(`/common/umiack-site-assets/img/tours/${tourId}/images-manifest.json`);
+        if (response.ok) {
+          const manifest = await response.json();
+          renderSlider(manifest);
+        } else {
+          console.warn('Umiack Slider: Local manifest not found, falling back to HTML scan.');
+          scanHTML();
         }
+      } catch (err) {
+        console.error('Umiack Slider: Error loading manifest:', err);
+        scanHTML();
       }
-      images.push({ src, alt, srcset: null });
-    });
+    } else {
+      scanHTML();
+    }
 
-    // --- 5. Navigation Control (Main) ---
+    function scanHTML() {
+      const slideEls = WID.querySelectorAll('.umiack-slide');
+      slideEls.forEach((el) => {
+        const img = el.querySelector('img');
+        const src = (img && (img.getAttribute('data-src') || img.src)) || '';
+        const alt = (img && img.alt) || '';
+        const srcset = img && img.getAttribute('srcset');
+        images.push({ src, alt, srcset });
+      });
+      finalizeInit();
+    }
+
+    function renderSlider(manifest) {
+      track.innerHTML = '';
+      manifest.forEach((item) => {
+        const figure = document.createElement('figure');
+        figure.className = 'umiack-slide';
+        
+        const img = document.createElement('img');
+        
+        // Build srcset from variants
+        const srcset = item.variants.map(v => `${v.webp} ${v.width}w`).join(', ');
+        const fallbackSrc = item.variants.length > 0 ? item.variants[Math.min(1, item.variants.length - 1)].jpg : '';
+        
+        img.src = fallbackSrc;
+        img.alt = item.alt;
+        img.loading = 'lazy';
+        img.setAttribute('srcset', srcset);
+        img.setAttribute('sizes', '(min-width: 860px) 840px, 100vw');
+        
+        figure.appendChild(img);
+        track.appendChild(figure);
+        
+        images.push({ src: fallbackSrc, alt: item.alt, srcset });
+      });
+      finalizeInit();
+    }
+
+    function finalizeInit() {
+      total = images.length;
+      if (total === 0) return;
+
+      // Generate Dots
+      dotsWrap.innerHTML = '';
+      images.forEach((_, idx) => {
+        const dot = document.createElement('button');
+        dot.className = `umiack-dot${idx === 0 ? ' active' : ''}`;
+        dot.setAttribute('aria-label', `Go to slide ${idx + 1}`);
+        dot.addEventListener('click', () => goTo(idx));
+        dotsWrap.appendChild(dot);
+      });
+
+      // Navigation Setup
+      btnPrev.addEventListener('click', () => goTo(current - 1));
+      btnNext.addEventListener('click', () => goTo(current + 1));
+      
+      // Auto-refresh dots state
+      goTo(0);
+    }
+
+    // --- 5. Navigation Control ---
     function goTo(idx) {
+      if (total === 0) return;
       current = (idx + total) % total;
       track.style.transition = '';
       track.style.transform = `translate3d(-${current * 100}%, 0, 0)`;
@@ -74,18 +132,6 @@
         dot.classList.toggle('active', j === current);
       });
     }
-
-    // Generate Dots
-    images.forEach((_, idx) => {
-      const dot = document.createElement('button');
-      dot.className = `umiack-dot${idx === 0 ? ' active' : ''}`;
-      dot.setAttribute('aria-label', `Go to slide ${idx + 1}`);
-      dot.addEventListener('click', () => goTo(idx));
-      dotsWrap.appendChild(dot);
-    });
-
-    btnPrev.addEventListener('click', () => goTo(current - 1));
-    btnNext.addEventListener('click', () => goTo(current + 1));
 
     // --- 6. Touch Swiping (Main) ---
     let startX = 0, startY = 0, diffX = 0, diffY = 0, isSwiping = false, startWidth = 0;
@@ -211,75 +257,6 @@
       }
     });
 
-    // --- 8. Responsive Strategy (WordPress API) ---
-    const fetchResponsiveImages = async () => {
-      const sizesHint = '(min-width: 860px) 840px, 100vw';
-      
-      images.forEach(async (data, idx) => {
-        if (!data.src) return;
-
-        // Extract original filename to search in Media Library
-        const pathParts = data.src.split('/');
-        let filename = pathParts[pathParts.length - 1].split('.')[0];
-        const lastDash = filename.lastIndexOf('-');
-        if (lastDash > -1) {
-          const suffix = filename.substring(lastDash + 1);
-          // Remove WP auto-generated resolution suffix like -1024x768 or -scaled
-          if (suffix.indexOf('x') > 0 || suffix === 'scaled') {
-            filename = filename.substring(0, lastDash);
-          }
-        }
-
-        try {
-          const response = await fetch(`/wp-json/wp/v2/media?search=${encodeURIComponent(filename)}&per_page=5&_fields=source_url,media_details`);
-          const items = await response.json();
-
-          if (items && items.length > 0) {
-            const media = items[0];
-            const availableSizes = media.media_details.sizes || {};
-            const srcsetParts = [];
-            const usedWidths = new Set();
-
-            // Build srcset from all available versions
-            Object.keys(availableSizes).forEach(sizeKey => {
-              const sizeData = availableSizes[sizeKey];
-              if (sizeData && sizeData.source_url && !usedWidths.has(sizeData.width)) {
-                srcsetParts.push(`${sizeData.source_url} ${sizeData.width}w`);
-                usedWidths.add(sizeData.width);
-              }
-            });
-
-            // Fallback to original full size
-            if (media.source_url && !usedWidths.has(media.media_details.width)) {
-              srcsetParts.push(`${media.source_url} ${media.media_details.width}w`);
-            }
-
-            if (srcsetParts.length > 0) {
-              const srcsetStr = srcsetParts.join(', ');
-              data.srcset = srcsetStr;
-
-              // Apply to main slider img
-              const targetImg = slideEls[idx].querySelector('img');
-              if (targetImg) {
-                targetImg.setAttribute('data-srcset', srcsetStr);
-                targetImg.setAttribute('data-sizes', sizesHint);
-                // If already loaded, upgrade immediately
-                if (targetImg.src) {
-                  targetImg.setAttribute('srcset', srcsetStr);
-                  targetImg.setAttribute('sizes', sizesHint);
-                }
-              }
-            }
-          }
-        } catch (err) {
-          console.warn('Umiack Slider: Failed to fetch responsive manifest for:', filename, err);
-        }
-      });
-    };
-
-    // Initial render
-    goTo(0);
-    fetchResponsiveImages();
     window.UmiackSliderInitialized = true;
   };
 

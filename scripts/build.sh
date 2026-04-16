@@ -9,6 +9,9 @@ echo "🧹 Cleaning dist..."
 rm -rf dist
 mkdir -p dist
 
+echo "🖼  Optimizing images..."
+node ./scripts/optimize-images.mjs
+
 echo "📂 Copying src to dist..."
 # Use cp -R and then clean up metadata files
 cp -R src/* dist/

@@ -4,13 +4,20 @@
   var baseJs = 'https://jp.umiack.com/common/umiack-site-assets/js/';
   var baseCss = 'https://jp.umiack.com/common/umiack-site-assets/css/';
   
-  // 1. Load Slider CSS (if not already present)
-  if (!document.getElementById('umiack-slider-css')) {
+  // 1. Load Styles (if not already present)
+  if (!document.getElementById('kayak-tour-css')) {
     var l = document.createElement('link');
-    l.id = 'umiack-slider-css';
+    l.id = 'kayak-tour-css';
     l.rel = 'stylesheet';
     l.href = baseCss + 'kayak-tour.css';
     document.head.appendChild(l);
+  }
+  if (!document.getElementById('umiack-slider-css')) {
+    var sl = document.createElement('link');
+    sl.id = 'umiack-slider-css';
+    sl.rel = 'stylesheet';
+    sl.href = baseCss + 'umiack-slider.css';
+    document.head.appendChild(sl);
   }
 
   // 2. Load Slider JS

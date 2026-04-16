@@ -24,13 +24,14 @@ jobs:
       - name: 🧹 Build and Optimize
         run: ./scripts/build.sh
 
-      - name: 🚀 Deploy to Sakura Internet (SFTP)
+      - name: 🚀 Deploy to Sakura Internet (FTPS)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.SFTP_HOST }}
           username: ${{ secrets.SFTP_USERNAME }}
           password: ${{ secrets.SFTP_PASSWORD }}
-          protocol: sftp
-          port: 22
+          # ここで FTPS (Port 21) を指定します
+          protocol: ftps
+          port: 21
           local-dir: ./dist/server/
           server-dir: /home/umiack/www/

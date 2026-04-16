@@ -5,9 +5,7 @@
   <li>日程は桜の時期に合わせて個別に調整いたします</li>
   <li>申込・お問い合わせ：　お問い合わせページ / LINE / 電話</li>
 </ul>
-<!-- /wp:paragraph -->
 
-<!-- wp:html -->
 <!-- 
   【YouTube動画の表示サイズ切り替えマニュアル】
   すぐ下にある div class="〇〇" の名前を変えるだけでサイズが自動調整されます。
@@ -20,40 +18,95 @@
     allowfullscreen>
   </iframe>
 </div>
-<!-- /wp:html -->
 
-<!-- wp:gallery {"columns":2,"linkTarget":"_blank","linkTo":"media","aspectRatio":"4/3","style":{"border":{"radius":{"topLeft":"0px","topRight":"0px","bottomLeft":"0px","bottomRight":"0px"}}}} -->
-<figure class="wp-block-gallery has-nested-images columns-2 is-cropped"
-  style="border-top-left-radius:0px;border-top-right-radius:0px;border-bottom-left-radius:0px;border-bottom-right-radius:0px">
-  <!-- wp:image {"id":1957,"aspectRatio":"4/3","sizeSlug":"large","linkDestination":"none"} -->
-  <figure class="wp-block-image size-large"><img src="https://jp.umiack.com/wp-content/uploads/2024/02/1-800x642.png"
-      alt="" class="wp-image-1957" style="aspect-ratio:4/3" /></figure>
-  <!-- /wp:image -->
+<!--
+  ╔══════════════════════════════════════════════════════════╗
+  ║  Umiack カスタムスライダー                               ║
+  ║  写真を追加・削除するには、下の <figure> ブロックを      ║
+  ║  コピーして src の URL を変更してください。              ║
+  ╚══════════════════════════════════════════════════════════╝
+-->
+<div class="umiack-slider-wrap" id="slider-main">
+  <div class="umiack-slider">
 
-  <!-- wp:image {"id":1049,"aspectRatio":"4/3","sizeSlug":"large","linkDestination":"media"} -->
-  <figure class="wp-block-image size-large"><a
-      href="https://jp.umiack.com/wp-content/uploads/2024/02/IMG_1420-copy-scaled.jpg" target="_blank"><img
-        src="https://jp.umiack.com/wp-content/uploads/2024/02/IMG_1420-copy-800x600.jpg" alt="" class="wp-image-1049"
-        style="aspect-ratio:4/3" /></a></figure>
-  <!-- /wp:image -->
+    <!-- ▼ ここに写真を追加・削除してください ▼ -->
+    <div class="umiack-slides">
+      <figure class="umiack-slide">
+        <img src="https://jp.umiack.com/wp-content/uploads/2024/02/1-800x642.png" alt="カヤックツアー 1" loading="lazy">
+      </figure>
+      <figure class="umiack-slide">
+        <img src="https://jp.umiack.com/wp-content/uploads/2024/02/IMG_1420-copy-scaled.jpg" alt="カヤックツアー 2"
+          loading="lazy">
+      </figure>
+      <figure class="umiack-slide">
+        <img src="https://jp.umiack.com/wp-content/uploads/2024/02/337997159_760030845491270_2364400558993242946_n.jpg"
+          alt="カヤックツアー 3" loading="lazy">
+      </figure>
+      <figure class="umiack-slide">
+        <img src="https://jp.umiack.com/wp-content/uploads/2024/02/IMG_5850-800x600.webp" alt="カヤックツアー 4"
+          loading="lazy">
+      </figure>
+    </div>
+    <!-- ▲ ここまで ▲ -->
+    
+    <!-- 前へボタン -->
+    <button class="umiack-btn umiack-btn-prev" aria-label="前の写真">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+        stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+    </button>
 
-  <!-- wp:image {"id":1045,"aspectRatio":"4/3","sizeSlug":"large","linkDestination":"media"} -->
-  <figure class="wp-block-image size-large"><a
-      href="https://jp.umiack.com/wp-content/uploads/2024/02/337997159_760030845491270_2364400558993242946_n.jpg"
-      target="_blank"><img
-        src="https://jp.umiack.com/wp-content/uploads/2024/02/337997159_760030845491270_2364400558993242946_n-800x600.jpg"
-        alt="" class="wp-image-1045" style="aspect-ratio:4/3" /></a></figure>
-  <!-- /wp:image -->
+    <!-- 次へボタン -->
+    <button class="umiack-btn umiack-btn-next" aria-label="次の写真">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+        stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
 
-  <!-- wp:image {"id":2090,"aspectRatio":"4/3","sizeSlug":"large","linkDestination":"none"} -->
-  <figure class="wp-block-image size-large"><img
-      src="https://jp.umiack.com/wp-content/uploads/2024/02/IMG_5850-800x600.webp" alt="" class="wp-image-2090"
-      style="aspect-ratio:4/3" /></figure>
-  <!-- /wp:image -->
-</figure>
-<!-- /wp:gallery -->
+    <!-- 拡大ボタン -->
+    <button class="umiack-btn umiack-btn-expand" aria-label="フルスクリーンで見る">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round">
+        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+      </svg>
+    </button>
 
-<!-- wp:html -->
+  </div>
+
+  <!-- ドットインジケーター（.umiack-slider の外・.umiack-slider-wrap の中に配置） -->
+  <div class="umiack-dots" role="tablist" aria-label="スライド一覧"></div>
+
+</div>
+
+<!-- フルスクリーンモーダル -->
+<div class="umiack-modal" id="umiack-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-label="拡大写真ビューアー">
+  <div class="umiack-modal-inner">
+    <img class="umiack-modal-img" src="" alt="">
+    <button class="umiack-btn umiack-modal-nav umiack-modal-prev" aria-label="前の写真">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+        stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+    </button>
+    <button class="umiack-btn umiack-modal-nav umiack-modal-next" aria-label="次の写真">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+        stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
+    <button class="umiack-btn umiack-btn-close" aria-label="閉じる">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+        stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    <div class="umiack-modal-counter" aria-live="polite"></div>
+  </div>
+</div>
+
 <p class="intro-paragraph">
   東京都心でお花見カヤックしませんか？江戸時代に開鑿された運河をのんびりと漕ぎながら巡り、桜のトンネルと水上から眺める東京を楽しみます。初心者や体力に自信のない方でも、流れや波のない静水なので楽しめます。
 </p>

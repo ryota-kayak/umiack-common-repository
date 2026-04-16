@@ -1,4 +1,4 @@
-<!-- wp:paragraph -->
+<!-- wp:html -->
 <ul class="top-summary-list">
   <li>東京都心の静水運河で楽しむ少人数制のカヤックツアー</li>
   <li>東京スカイツリー直下までカヤックで</li>
@@ -6,9 +6,7 @@
   <li>日程は個別に調整いたします</li>
   <li>申込・お問い合わせ：　お問い合わせページ / LINE / 電話</li>
 </ul>
-<!-- /wp:paragraph -->
 
-<!-- wp:html -->
 <!-- 
   【YouTube動画の表示サイズ切り替えマニュアル】
   すぐ下にある div class="〇〇" の名前を変えるだけでサイズが自動調整されます。
@@ -17,34 +15,103 @@
   ・URLの/shorts/を/embed/に変更してください。
 -->
 <div class="youtube-shorts">
-  <iframe src="https://youtube.com/embed/Ou-VVj9WEp4" title="YouTube video player" loading="lazy"
+  <iframe src="https://www.youtube.com/embed/Ou-VVj9WEp4" title="YouTube video player" loading="lazy"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
     allowfullscreen>
   </iframe>
 </div>
-<!-- /wp:html -->
 
-<!-- wp:gallery {"columns":2,"linkTarget":"_blank","linkTo":"media","aspectRatio":"4/3","style":{"border":{"radius":{"topLeft":"0px","topRight":"0px","bottomLeft":"0px","bottomRight":"0px"}}}} -->
-<figure class="wp-block-gallery has-nested-images columns-2 is-cropped" style="border-top-left-radius:0px;border-top-right-radius:0px;border-bottom-left-radius:0px;border-bottom-right-radius:0px"><!-- wp:image {"id":1265,"aspectRatio":"4/3","sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src="http://jp.umiack.com/wp-content/uploads/2024/05/IMG_8412-800x600.webp" alt="スカイツリーコース" class="wp-image-1265" style="aspect-ratio:4/3"/></figure>
-<!-- /wp:image -->
+<!--
+  ╔══════════════════════════════════════════════════════════╗
+  ║  Umiack カスタムスライダー                               ║
+  ║  写真を追加・削除するには、下の <figure> ブロックを      ║
+  ║  コピーして src の URL を変更してください。              ║
+  ╚══════════════════════════════════════════════════════════╝
+-->
+<div class="umiack-slider-wrap" id="slider-main">
+  <div class="umiack-slider">
 
-<!-- wp:image {"id":1264,"aspectRatio":"4/3","sizeSlug":"large","linkDestination":"media"} -->
-<figure class="wp-block-image size-large"><a href="http://jp.umiack.com/wp-content/uploads/2024/05/IMG_8400-scaled.webp" target="_blank"><img src="http://jp.umiack.com/wp-content/uploads/2024/05/IMG_8400-600x800.webp" alt="スカイツリーコース" class="wp-image-1264" style="aspect-ratio:4/3"/></a></figure>
-<!-- /wp:image -->
+    <!-- ▼ ここに写真を追加・削除してください ▼ -->
+    <div class="umiack-slides">
+      <figure class="umiack-slide">
+        <img src="https://jp.umiack.com/wp-content/uploads/2024/02/1-800x642.png" alt="カヤックツアー 1" loading="lazy">
+      </figure>
+      <figure class="umiack-slide">
+        <img src="https://jp.umiack.com/wp-content/uploads/2024/02/IMG_1420-copy-scaled.jpg" alt="カヤックツアー 2"
+          loading="lazy">
+      </figure>
+      <figure class="umiack-slide">
+        <img src="https://jp.umiack.com/wp-content/uploads/2024/02/337997159_760030845491270_2364400558993242946_n.jpg"
+          alt="カヤックツアー 3" loading="lazy">
+      </figure>
+      <figure class="umiack-slide">
+        <img src="https://jp.umiack.com/wp-content/uploads/2024/02/IMG_5850-800x600.webp" alt="カヤックツアー 4"
+          loading="lazy">
+      </figure>
+    </div>
+    <!-- ▲ ここまで ▲ -->
 
-<!-- wp:image {"id":1262,"aspectRatio":"4/3","sizeSlug":"large","linkDestination":"media"} -->
-<figure class="wp-block-image size-large"><a href="http://jp.umiack.com/wp-content/uploads/2024/05/167716557_132976788787978_4765548746047258987_n-scaled.webp" target="_blank"><img src="http://jp.umiack.com/wp-content/uploads/2024/05/167716557_132976788787978_4765548746047258987_n-800x600.webp" alt="スカイツリーコース" class="wp-image-1262" style="aspect-ratio:4/3"/></a></figure>
-<!-- /wp:image -->
+    <!-- 前へボタン -->
+    <button class="umiack-btn umiack-btn-prev" aria-label="前の写真">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+        stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+    </button>
 
-<!-- wp:image {"id":2090,"aspectRatio":"4/3","sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src="https://jp.umiack.com/wp-content/uploads/2024/02/IMG_5850-800x600.webp" alt="" class="wp-image-2090" style="aspect-ratio:4/3"/></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery -->
+    <!-- 次へボタン -->
+    <button class="umiack-btn umiack-btn-next" aria-label="次の写真">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+        stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
 
-<!-- wp:html -->
+    <!-- 拡大ボタン -->
+    <button class="umiack-btn umiack-btn-expand" aria-label="フルスクリーンで見る">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round">
+        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+      </svg>
+    </button>
+
+  </div>
+
+  <!-- ドットインジケーター（.umiack-slider の外・.umiack-slider-wrap の中に配置） -->
+  <div class="umiack-dots" role="tablist" aria-label="スライド一覧"></div>
+
+</div>
+
+<!-- フルスクリーンモーダル -->
+<div class="umiack-modal" id="umiack-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-label="拡大写真ビューアー">
+  <div class="umiack-modal-inner">
+    <img class="umiack-modal-img" src="" alt="">
+    <button class="umiack-btn umiack-modal-nav umiack-modal-prev" aria-label="前の写真">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+        stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+    </button>
+    <button class="umiack-btn umiack-modal-nav umiack-modal-next" aria-label="次の写真">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+        stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
+    <button class="umiack-btn umiack-btn-close" aria-label="閉じる">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+        stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    <div class="umiack-modal-counter" aria-live="polite"></div>
+  </div>
+</div>
+
 <p class="intro-paragraph">
-  江戸時代から続く、東京の中心に張り巡らされた広大な運河網。ここをカヤックで巡り、近代都市・東京の象徴であるスカイツリーの根元を目指します。所要時間は3〜4時間ほど。初心者や体力に自信のない方でも、流れや波のない静水なので楽しめます。
+  江戸時代から続く、東京の中心に張り巡らされた広大な運河網。ここをカヤックで巡り、近代都市・東京の象徴であるスカイツリーの根元を目指します。
+  所要時間は3〜4時間ほど。お客様の体力やご希望に合わせて、手軽な「往復コース」や、たっぷり満喫できる「周回コース」などをお選びいただけます。
 </p>
 
 <p class="section-heading">☆見どころ☆</p>
@@ -57,7 +124,7 @@
   </li>
   <li>
     <span class="feature-title">【歴史】江戸の舟運と現代都市の交錯</span>
-      都民にもあまり知られていない、都心に残された水上の秘境です。江戸時代に物流の要衝として開削された運河を進むと、当時の面影を残す歴史的な護岸と、見上げるほどの近代建築群が織りなす対照的な景観が広がります。広大な湿地帯から江戸、そして現代の巨大都市へと変貌を遂げた東京の、隠された歴史的背景を水上から読み解きます。
+    都民にもあまり知られていない、都心に残された水上の秘境です。江戸時代に物流の要衝として開削された運河を進むと、当時の面影を残す歴史的な護岸と、見上げるほどの近代建築群が織りなす対照的な景観が広がります。広大な湿地帯から江戸、そして現代の巨大都市へと変貌を遂げた東京の、隠された歴史的背景を水上から読み解きます。
   </li>
   <li>
     <span class="feature-title">【水鏡】水面に映り込む「逆さツリー」</span>

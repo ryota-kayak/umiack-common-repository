@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>物理ベース屈折＋色収差のリアルな水滴</title>
+  <style>
+    html, body {height: 100%; margin: 0;}
+    body {overflow: hidden;}
+    canvas {display: block;}
+  </style>
+</head>
+<body>
+<script src="https://unpkg.com/three@0.155.0/build/three.min.js"></script>
+<script id="fragShader" type="x-shader/x-fragment">
+precision highp float;
+uniform sampler2D uTexture;
+uniform vec2 uResolution;
+uniform vec2 uDrop;     // 水滴中心 [0,1]
+uniform vec2 uLight;    // 光源位置 [0,1]
+
+#define PI 3.14159265359
+
+// 色収差用の屈折率
+float getRefractIndex(float w) {
+  // 赤:0.0 緑:0.5 青:1.0
+  return mix(1.335, 1.355, w); // 水の分散値(可視光の範囲)
+}
+
+void main() {
+  vec2 uv = gl_FragCoord.xy / uResolution.xy;
+  vec2 dropCenter = uDrop;
+  float dropRadius = 0.21; // 水滴半径
+  float d = distance(uv, dropCenter);
+  float ratio = d / dropRadius;
+
+  vec3 col = vec3(0.0);
+
+  // 水滴の内側？
+  if (d < dropRadius) {
+    // 物理ベースの屈折 + 色収差
+    float thickness = sqrt(dropRadius * dropRadius - d * d); // 球面の厚み
+    float eta_r = getRefractIndex(0.0); // 赤
+    float eta_g = getRefractIndex(0.5); // 緑
+    float eta_b = getRefractIndex(1.0); // 青
+
+    // 視線ベクトル(画面->手前)
+    vec3 V = vec3(0.0, 0.0, -1.0);
+    // 法線（球体）
+    vec3 N = normalize(vec3(uv - dropCenter, thickness));
+
+    // 各色成分の屈折方向
+    vec3 refrR = refract(V, N, 1.0 / eta_r);
+    vec3 refrG = refract(V, N, 1.0 / eta_g);
+    vec3 refrB = refract(V, N, 1.0 / eta_b);
+
+    // 背景画像上のサンプリング座標をずらす（屈折量に応じて）
+    // 「1.2 * refrX.xy」で屈折の強さ・範囲を調整
+    vec2 sampleR = uv + 1.2 * refrR.xy * (dropRadius - d);
+    vec2 sampleG = uv + 1.2 * refrG.xy * (dropRadius - d);
+    vec2 sampleB = uv + 1.2 * refrB.xy * (dropRadius - d);
+
+    // 色収差サンプリング
+    col.r = texture2D(uTexture, clamp(sampleR, 0.0, 1.0)).r;
+    col.g = texture2D(uTexture, clamp(sampleG, 0.0, 1.0)).g;
+    col.b = texture2D(uTexture, clamp(sampleB, 0.0, 1.0)).b;
+
+    // 照明・ハイライト
+    vec2 lightVec2D = normalize(uLight - dropCenter);
+    vec3 lightDir = normalize(vec3(lightVec2D, 0.8));
+    float diffuse = 0.93 + 0.15 * max(0.0, dot(N, lightDir));
+    vec3 viewDir = vec3(0.0,0.0,1.0);
+    vec3 halfDir = normalize(lightDir + viewDir);
+    float spec = pow(max(0.0, dot(N, halfDir)), 64.0);
+    float specular = spec * (1.0 - ratio) * 1.7;
+
+    // 透明度
+    float alpha = 0.5 + 0.5 * pow(1.0 - ratio, 0.35);
+
+    // 仕上げ合成
+    col = col * diffuse + vec3(specular);
+    gl_FragColor = vec4(col, alpha);
+
+    // フチのカウスティク（明るい輪郭）
+    if (abs(d - dropRadius) < 0.016) {
+      float caustic = 0.22 * (1.0 - smoothstep(0.0, 0.016, abs(d - dropRadius)));
+      gl_FragColor.rgb += vec3(caustic, caustic, caustic*1.05);
+      gl_FragColor.a = max(gl_FragColor.a, 0.7);
+    }
+
+  } else {
+    // 水滴外は普通の背景
+    col = texture2D(uTexture, uv).rgb;
+    gl_FragColor = vec4(col, 1.0);
+  }
+}
+</script>
+<script>
+const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+const scene = new THREE.Scene();
+
+let mouse = { x: 0.5, y: 0.5 }; // 水滴中心
+const light = { x: 0.95, y: 0.92 }; // 画面右上
+
+window.addEventListener('pointermove', e => {
+  mouse.x = e.clientX / window.innerWidth;
+  mouse.y = 1.0 - (e.clientY / window.innerHeight);
+});
+
+// CORS対応の背景画像（picsum.photos利用）
+const imgUrl = 'https://picsum.photos/1200/800';
+const loader = new THREE.TextureLoader();
+loader.setCrossOrigin('anonymous');
+loader.load(imgUrl, texture => {
+  const material = new THREE.ShaderMaterial({
+    uniforms: {
+      uTexture: { value: texture },
+      uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+      uDrop: { value: new THREE.Vector2(mouse.x, mouse.y) },
+      uLight: { value: new THREE.Vector2(light.x, light.y) }
+    },
+    fragmentShader: document.getElementById('fragShader').textContent,
+    transparent: true
+  });
+  const geometry = new THREE.PlaneGeometry(2, 2);
+  const mesh = new THREE.Mesh(geometry, material);
+  scene.add(mesh);
+
+  window.addEventListener('resize', () => {
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    material.uniforms.uResolution.value.set(window.innerWidth, window.innerHeight);
+  });
+
+  renderer.setAnimationLoop(() => {
+    material.uniforms.uDrop.value.set(mouse.x, mouse.y);
+    material.uniforms.uLight.value.set(light.x, light.y);
+    renderer.render(scene, camera);
+  });
+});
+</script>
+</body>
+</html>

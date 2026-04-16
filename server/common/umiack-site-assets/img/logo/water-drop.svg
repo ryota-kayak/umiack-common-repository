@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg class="highlight" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="480" height="480">
+  <defs>
+    <linearGradient id="limelight" x1="152" y1="144" x2="320" y2="96" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fff2cc" stop-opacity="0.6" />
+      <stop offset="70%" stop-color="#ffd699" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#ffcc66" stop-opacity="0.25" />
+    </linearGradient>
+    <filter id="blurLimeLight" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="10"/>
+    </filter>
+  </defs>
+
+  <!-- Rim light -->
+  <path
+    id="rimLight"
+    d="m 146.94382,134.44944 a 192,192 0 0 1 168,-48"
+    stroke="url(#limelight)"
+    stroke-width="10.8"
+    stroke-opacity="0.7"
+    fill="none"
+    stroke-linecap="round"
+    filter="url(#blurLimeLight)"
+  />
+
+  <!-- Spot light -->
+  <ellipse
+    id="spotLight"
+    cx="280" cy="152"
+    rx="16" ry="8"
+    fill="white"
+    opacity="0.9"
+    transform="rotate(-10 280 152)"
+  />
+  
+  <!-- Brand colored water drop -->
+  <ellipse
+    id="brandColor"
+    cx="240" cy="240"
+    rx="240" ry="240"
+    fill="#ff2800"
+    opacity="1"
+  />
+
+</svg>

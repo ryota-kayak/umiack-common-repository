@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Canvas Water Drop Lens Effect</title>
+  <style>
+    body { margin: 0; }
+    canvas { display: block; width: 100vw; height: 100vh; background: #333; }
+  </style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+
+// Set canvas size to fill window
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+// Draw a sample background (checkerboard)
+function drawBackground(ctx) {
+  for(let x=0;x<canvas.width;x+=40) {
+    for(let y=0;y<canvas.height;y+=40) {
+      ctx.fillStyle = ((x+y)/40)%2===0 ? "#bdf" : "#7ad";
+      ctx.fillRect(x, y, 40, 40);
+    }
+  }
+}
+
+// Draw a fake water drop "lens" effect
+function drawWaterDrop(ctx, cx, cy, r, magnification) {
+  // Get background image data
+  const imageData = ctx.getImageData(cx - r, cy - r, 2*r, 2*r);
+  const src = imageData.data;
+  // Create an output image
+  const output = ctx.createImageData(2*r, 2*r);
+  const dst = output.data;
+
+  for(let y=0; y<2*r; y++) {
+    for(let x=0; x<2*r; x++) {
+      // Convert to polar coordinates from center
+      const dx = x - r;
+      const dy = y - r;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if(dist > r) continue; // Outside the drop
+
+      // Lens distortion: pixels closer to center are magnified
+      const theta = Math.atan2(dy, dx);
+      const lensR = dist / r;
+      const factor = 1 + (magnification - 1) * (1 - lensR*lensR); // Quadratic
+      const srcX = Math.round(r + dx / factor);
+      const srcY = Math.round(r + dy / factor);
+
+      // Clamp
+      if(srcX<0||srcX>=2*r||srcY<0||srcY>=2*r) continue;
+
+      // Copy pixel
+      const sIdx = 4 * (srcY * 2*r + srcX);
+      const dIdx = 4 * (y * 2*r + x);
+      dst[dIdx+0] = src[sIdx+0];
+      dst[dIdx+1] = src[sIdx+1];
+      dst[dIdx+2] = src[sIdx+2];
+      dst[dIdx+3] = 180 + 40 * (1 - lensR); // More opaque at center, more transparent at edge
+    }
+  }
+  // Draw the output image onto the canvas
+  ctx.putImageData(output, cx - r, cy - r);
+
+  // Optionally: add a highlight
+  ctx.save();
+  ctx.globalAlpha = 0.25;
+  ctx.beginPath();
+  ctx.arc(cx - r*0.3, cy - r*0.3, r*0.35, 0, Math.PI*2);
+  ctx.fillStyle = "#fff";
+  ctx.filter = "blur(2px)";
+  ctx.fill();
+  ctx.filter = "none";
+  ctx.globalAlpha = 1.0;
+  ctx.restore();
+
+  // Optionally: add a bright rim (caustic)
+  ctx.save();
+  ctx.strokeStyle = "rgba(255,255,255,0.6)";
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.arc(cx, cy, r-1, 0, Math.PI*2);
+  ctx.shadowColor = "#fff";
+  ctx.shadowBlur = 5;
+  ctx.stroke();
+  ctx.restore();
+}
+
+// Animate drop moving with mouse
+let dropX = window.innerWidth/2, dropY = window.innerHeight/2;
+canvas.onpointermove = e => {
+  dropX = e.clientX; dropY = e.clientY;
+};
+
+function animate() {
+  drawBackground(ctx);
+  drawWaterDrop(ctx, dropX, dropY, 80, 1.7); // x, y, radius, magnification
+  requestAnimationFrame(animate);
+}
+animate();
+</script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Interactive WebGL Water Drop Lens</title>
+  <style>
+    html, body {height: 100%; margin: 0;}
+    body {overflow: hidden;}
+    canvas {display: block;}
+  </style>
+</head>
+<body>
+<script src="https://unpkg.com/three@0.155.0/build/three.min.js"></script>
+<script id="fragShader" type="x-shader/x-fragment">
+uniform sampler2D uTexture;
+uniform vec2 uResolution;
+uniform vec2 uDrop;     // Drop position (normalized [0,1])
+void main() {
+  vec2 uv = gl_FragCoord.xy / uResolution.xy;
+  vec2 dropCenter = uDrop;
+  float r = 0.20;
+  float d = distance(uv, dropCenter);
+  vec2 uv2 = uv;
+  if (d < r) {
+    float lensStrength = 0.18;
+    float ratio = d / r;
+    uv2 = dropCenter + (uv - dropCenter) * (1.0 - lensStrength * (1.0 - ratio*ratio));
+  }
+  vec3 col = texture2D(uTexture, uv2).rgb;
+  // Add a highlight
+  if (d < r * 0.7 && length(uv - (dropCenter + vec2(-0.07, -0.07))) < 0.04) {
+    col += vec3(0.7,0.7,1.0) * (1.0 - d / r);
+  }
+  gl_FragColor = vec4(col, 1.0);
+}
+</script>
+<script>
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+const scene = new THREE.Scene();
+
+let mouse = { x: 0.5, y: 0.5 }; // normalized [0,1]
+
+window.addEventListener('pointermove', e => {
+  mouse.x = e.clientX / window.innerWidth;
+  mouse.y = 1.0 - (e.clientY / window.innerHeight); // invert Y for shader
+});
+
+const textureLoader = new THREE.TextureLoader();
+textureLoader.load('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80', texture => {
+  const material = new THREE.ShaderMaterial({
+    uniforms: {
+      uTexture: { value: texture },
+      uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+      uDrop: { value: new THREE.Vector2(mouse.x, mouse.y) }
+    },
+    fragmentShader: document.getElementById('fragShader').textContent
+  });
+  const geometry = new THREE.PlaneGeometry(2, 2);
+  const mesh = new THREE.Mesh(geometry, material);
+  scene.add(mesh);
+
+  // Update resolution on resize
+  window.addEventListener('resize', () => {
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    material.uniforms.uResolution.value.set(window.innerWidth, window.innerHeight);
+  });
+
+  renderer.setAnimationLoop(() => {
+    material.uniforms.uDrop.value.set(mouse.x, mouse.y);
+    renderer.render(scene, camera);
+  });
+});
+</script>
+</body>
+</html>

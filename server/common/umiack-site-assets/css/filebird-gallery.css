@@ -1,0 +1,85 @@
+/* =========================================
+   FileBird gallery
+   - PC: 3 columns
+   - Smartphone: 2 columns
+   - Portrait images are not enlarged
+   - No cropping
+   - Lightbox click is preserved
+   ========================================= */
+
+/* gallery container */
+ul.filebird-block-filebird-gallery.wp-block-gallery.blocks-gallery-grid {
+	display: grid !important;
+	grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+	gap: 12px !important;
+	padding: 0 !important;
+	margin: 0 auto !important;
+	list-style: none !important;
+	align-items: start !important;
+}
+
+/* each item */
+ul.filebird-block-filebird-gallery.wp-block-gallery.blocks-gallery-grid > li.blocks-gallery-item {
+	margin: 0 !important;
+	width: auto !important;
+	max-width: none !important;
+}
+
+/* fixed display box */
+ul.filebird-block-filebird-gallery.wp-block-gallery.blocks-gallery-grid > li.blocks-gallery-item > figure {
+	margin: 0 !important;
+	width: 100% !important;
+	height: 360px !important;
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	overflow: hidden !important;
+	background: transparent !important;
+}
+
+/* clickable link area */
+ul.filebird-block-filebird-gallery.wp-block-gallery.blocks-gallery-grid > li.blocks-gallery-item > figure > a {
+	display: flex !important;
+	width: 100% !important;
+	height: 100% !important;
+	align-items: center !important;
+	justify-content: center !important;
+	line-height: 0 !important;
+	text-decoration: none !important;
+}
+
+/* image inside link */
+ul.filebird-block-filebird-gallery.wp-block-gallery.blocks-gallery-grid > li.blocks-gallery-item > figure > a > img {
+	display: block !important;
+	width: 100% !important;
+	height: 100% !important;
+	max-width: 100% !important;
+	max-height: 100% !important;
+	object-fit: contain !important;
+	border: none !important;
+	box-shadow: none !important;
+}
+
+/* fallback: if no link wrapper exists */
+ul.filebird-block-filebird-gallery.wp-block-gallery.blocks-gallery-grid > li.blocks-gallery-item > figure > img {
+	display: block !important;
+	width: 100% !important;
+	height: 100% !important;
+	max-width: 100% !important;
+	max-height: 100% !important;
+	object-fit: contain !important;
+	border: none !important;
+	box-shadow: none !important;
+}
+
+/* smartphone: 2 columns */
+@media (max-width: 480px) {
+	ul.filebird-block-filebird-gallery.wp-block-gallery.blocks-gallery-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+		gap: 8px !important;
+	}
+
+	ul.filebird-block-filebird-gallery.wp-block-gallery.blocks-gallery-grid > li.blocks-gallery-item > figure {
+		height: 140px !important;
+	}
+}

@@ -1,0 +1,840 @@
+#main {
+  width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  /* 日本語を美しく魅せるタイポグラフィ設定 */
+  font-family: "Inter", "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Meiryo", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: 0.02em;
+}
+
+/* =========================================
+   YouTube 動画埋め込み用スタイル（雛形用）
+   -----------------------------------------
+   【使い方】
+   投稿画面（HTML）でYouTubeを囲っているdivタグの
+   class名を書き換えるだけで自動的にサイズが切り替わります。
+   ========================================= */
+
+/* ① 通常のYouTube動画（横長 16:9）を使う場合
+   HTML側の設定: <div class="youtube-wide">
+*/
+.youtube-wide {
+  width: 100%;
+  margin: 2em auto;
+  aspect-ratio: 16 / 9;
+  /* 横長の比率 */
+}
+
+/* ② YouTube Shorts（スマホ縦長 9:16）を使う場合
+   HTML側の設定: <div class="youtube-shorts">
+*/
+.youtube-shorts {
+  width: 100%;
+  max-width: 360px;
+  /* PCなどで画面を埋め尽くさない適切な最大幅 */
+  margin: 2em auto;
+  /* 画面の中央に配置 */
+  aspect-ratio: 9 / 16;
+  /* 縦長の比率 */
+}
+
+/* ①②共通：動画自体の装飾設定 */
+.youtube-wide iframe,
+.youtube-shorts iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* 親コンテナの高さに完全にフィットさせる */
+  border: 0;
+  border-radius: 12px;
+  /* 見栄え良く少し角を丸める */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* WordPressやテーマが自動挿入する独自の比率固定ラッパーを解除して綺麗に追従させる共通処理 */
+.youtube-wide .video-container,
+.youtube-wide .video-container .video,
+.youtube-shorts .video-container,
+.youtube-shorts .video-container .video {
+  padding-bottom: 0 !important;
+  height: 100% !important;
+}
+
+/* 汎用セクション見出し */
+.section-heading {
+  display: inline-block;
+  position: relative;
+  padding: 0.2em 0.5em 0.2em 1.5em;
+  /* 左側にアイコン用の余白を確保 */
+  color: #006064;
+  /* 濃い水辺の色（深緑がかった青） */
+  font-weight: bold;
+  border-bottom: 2px solid #00acc1;
+  /* 水面を連想させる明るい青の下線 */
+}
+
+/* 導入文（イントロ）の装飾 */
+.intro-paragraph {
+  font-size: 1.05em;
+  line-height: 1.8;
+  color: #333;
+  padding: 1.5em 1.8em;
+  margin: 2em 0;
+  background-color: #f7fbfc;
+  /* 極めて淡い水色 */
+  border-left: 2px solid #00acc1;
+  /* 線を細く */
+  border-radius: 0 4px 4px 0;
+}
+
+/* 見出し横の装飾 */
+.section-heading::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -15px;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 12px;
+  background-color: #26c6da;
+  /* アクセントカラー（水の色） */
+  border-radius: 50% 0 50% 0;
+}
+
+/* 詳細ボックス */
+.tour-info-box {
+  background-color: #f4f6f7;
+  /* 背景との差を出すために少しだけ濃いめのライトグレー（ほんのり青灰色で上品に） */
+  border: 1px solid #d1d5db;
+  /* 枠線も少し濃くして境界をくっきりと */
+  border-radius: 8px;
+  padding: 24px;
+  margin-top: 10px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  /* 影も少しだけ強めて、カードとして確実に浮き立たせる */
+}
+
+/* ボックス内の段落間の余白を整える */
+.tour-info-box p {
+  margin-bottom: 1.5em;
+  font-size: 0.95em;
+  /* 本文よりわずかに小さく */
+}
+
+/* 申し込みボタン */
+.btn-contact,
+.btn-line,
+.btn-phone {
+  display: inline-block;
+  padding: 12px 24px;
+  margin: 5px;
+  border-radius: 30px;
+  /* 丸みを持たせて親しみやすく */
+  font-weight: bold;
+  text-decoration: none;
+  transition: opacity 0.3s ease;
+}
+
+.btn-contact {
+  background: linear-gradient(135deg, #00838f 0%, #00acc1 100%);
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(0, 131, 143, 0.2);
+}
+
+.btn-line {
+  background-color: #06C755;
+  /* LINEの公式グリーン */
+  color: #fff !important;
+}
+
+.btn-contact:hover,
+.btn-line:hover,
+.btn-phone:hover {
+  opacity: 0.8;
+  /* ホバー時の効果 */
+}
+
+/* リンクアイコンを消す */
+.btn-contact .anchor-icon,
+.btn-line .anchor-icon,
+.btn-phone .anchor-icon {
+  display: none !important;
+}
+
+/* FAQの質問テキスト用スタイル */
+.faq-question {
+  display: block;
+  font-weight: bold;
+  color: #1a1a1a;
+  margin-bottom: 10px;
+}
+
+/* 詳細エリアの項目名用ラベルスタイル */
+.tour-detail-label {
+  display: inline-block;
+  font-weight: 700;
+  color: #333333;
+}
+
+/* ページ上部のリストの強調スタイル */
+.top-summary-list {
+  display: block;
+  font-weight: 700;
+  color: #333333;
+  line-height: 1.8;
+  list-style: none;
+  /* デフォルトの黒丸を消す */
+  padding-left: 0;
+  margin: 1.5em 0;
+}
+
+.top-summary-list li {
+  position: relative;
+  padding-left: 1.6em;
+  /* SVGアイコンを配置するための余白 */
+  margin-bottom: 0.6em;
+}
+
+/* 文字の「・」の代わりに高品質なSVGアイコン（チェックマーク）を表示 */
+.top-summary-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.35em;
+  /* 高さを文字に合わせる */
+  width: 1.1em;
+  height: 1.1em;
+  /* アクサンカラー（#00acc1）に合わせたスタイリッシュなチェックマーク */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300acc1' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+/* ☆見どころ☆の各項目のタイトル */
+.feature-title {
+  display: inline-block;
+  font-weight: 700;
+  color: #222222;
+  margin-bottom: 8px;
+  /* 本文との間に少し間を取る */
+}
+
+.application-flex-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.app-item {
+  flex: 1 1 180px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  padding: 16px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-phone {
+  background: linear-gradient(135deg, #455a64 0%, #607d8b 100%);
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(69, 90, 100, 0.2);
+  display: flex !important;
+  flex-direction: column !important;
+  /* 上下に並べる */
+  align-items: center;
+  justify-content: center;
+  padding: 10px 24px !important;
+  /* 上下のパディングを調整 */
+}
+
+.btn-main-text {
+  font-size: 0.95em;
+  display: flex;
+  align-items: center;
+}
+
+.btn-sub-text {
+  font-size: 0.85em;
+  opacity: 0.9;
+  margin-top: 2px;
+  font-family: monospace;
+  /* 番号を読みやすく */
+}
+
+/* 電話アイコンを追加（ボタン用） */
+.btn-main-text::before {
+  content: "";
+  display: inline-block;
+  width: 1.15em;
+  height: 1.15em;
+  margin-right: 6px;
+  background-color: #fff;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z'%3E%3C/path%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z'%3E%3C/path%3E%3C/svg%3E");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+.btn-phone:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(69, 90, 100, 0.3);
+}
+
+.app-item .btn-contact,
+.app-item .btn-line,
+.app-item .btn-phone {
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.app-line .btn-line {
+  margin-bottom: 12px;
+}
+
+.contact-line-qr-container {
+  margin: 0;
+}
+
+/* お問い合わせ欄のQRコード画像 */
+.contact-line-qr-image {
+  width: 100px;
+  height: auto;
+  display: block;
+}
+
+/* =========================================
+   セマンティック要素（リスト・定義リスト）用の追加スタイル
+   ========================================= */
+
+/* ☆見どころ☆ (ol.highlights-list) */
+.highlights-list {
+  list-style: none;
+  /* デフォルトの数字を消す */
+  counter-reset: highlight-counter;
+  /* カウンターをリセット */
+  padding-left: 0;
+  margin-bottom: 2em;
+}
+
+.highlights-list>li {
+  position: relative;
+  padding-left: 2.2em;
+  margin-bottom: 1.8em;
+}
+
+/* 丸い数字マーカーをおしゃれに自動配置 */
+.highlights-list>li::before {
+  counter-increment: highlight-counter;
+  content: counter(highlight-counter);
+  position: absolute;
+  left: 0;
+  top: 0.1em;
+  width: 1.6em;
+  height: 1.6em;
+  border-radius: 50%;
+  background-color: #00acc1;
+  /* アクセントカラー */
+  color: #fff;
+  font-weight: bold;
+  font-size: 0.9em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 172, 193, 0.3);
+}
+
+.highlights-list p {
+  margin-top: 0.5em;
+  margin-bottom: 0;
+  line-height: 1.7;
+}
+
+/* よくある質問 (dl.faq-list) */
+.faq-list {
+  margin-bottom: 2em;
+}
+
+.faq-item {
+  margin-bottom: 1.5em;
+  background-color: #fafafa;
+  padding: 1.2em 1.5em;
+  border-left: 4px solid #26c6da;
+  border-radius: 0 6px 6px 0;
+  /* 縦並びを強制する設定 */
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+}
+
+.faq-list dt.faq-question {
+  display: block !important;
+  width: 100% !important;
+  float: none !important;
+  font-weight: bold;
+  color: #006064;
+  margin-bottom: 0.5em;
+  font-size: 1.05em;
+}
+
+.faq-list dd.faq-answer {
+  display: block !important;
+  width: 100% !important;
+  float: none !important;
+  margin-left: 0 !important;
+  color: #444;
+  line-height: 1.6;
+}
+
+/* 詳細リスト (dl.tour-detail-list) */
+.tour-detail-list {
+  width: 100%;
+}
+
+.detail-row {
+  display: block;
+  margin-bottom: 1.5em;
+  padding-bottom: 1.2em;
+  border-bottom: 1px dashed #d1d5db;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+/* 既存のラベルスタイルを美しく上書き */
+.tour-detail-list dt.tour-detail-label {
+  display: inline-block;
+  background-color: #e0f7fa;
+  color: #00838f;
+  padding: 0.3em 1em;
+  border-radius: 20px;
+  /* 少し丸みを持たせて親しみやすく */
+  font-weight: 700;
+  font-size: 0.9em;
+  margin-bottom: 0.8em;
+}
+
+.tour-detail-list dd {
+  margin-left: 0;
+  color: #333;
+  line-height: 1.7;
+}
+
+/* スケジュール (ol.schedule-timeline) */
+.schedule-timeline {
+  list-style: none;
+  padding-left: 1.5em;
+  margin-top: 1.5em;
+  border-left: 2px solid #b2ebf2;
+  /* タイムラインの軸 */
+}
+
+.schedule-timeline li {
+  position: relative;
+  margin-bottom: 1.2em;
+  padding-left: 1em;
+  line-height: 1.4;
+}
+
+/* タイムラインの丸ポチ */
+.schedule-timeline li::before {
+  content: "";
+  position: absolute;
+  left: -2px;
+  /* 軸線の上に配置 */
+  top: 0.3em;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #00acc1;
+  border: 3px solid #f4f6f7;
+  /* 背景色と同じ境界線で切り抜く */
+  transform: translateX(-50%);
+  box-sizing: content-box;
+}
+
+.schedule-timeline time {
+  display: inline-block;
+  font-weight: bold;
+  color: #00838f;
+  margin-right: 0.8em;
+  font-family: monospace;
+  font-size: 1.1em;
+}
+
+.schedule-timeline span {
+  display: inline-block;
+}
+
+/* 持ち物・服装 (ul.gear-list) */
+.gear-list {
+  padding-left: 1.5em;
+  margin-top: 0.5em;
+}
+
+.gear-list li {
+  margin-bottom: 0.5em;
+  position: relative;
+  color: #444;
+  line-height: 1.5;
+}
+
+.article ul {
+  margin-bottom: 0;
+}
+
+.article ol {
+  margin-bottom: 0;
+}
+
+.highlights-list {
+  /* Cocoonのデフォルト余白(26px)を打ち消す */
+  padding-left: 0 !important;
+  margin-bottom: 27px !important;
+}
+
+@media screen and (max-width:781px) {
+  #main {
+    width: calc(95vw);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* スマホのときに箇条書きリスト全体が右に寄りすぎないようテーマの余白を強制上書き */
+  .top-summary-list {
+    padding-left: 0 !important;
+  }
+
+  /* スマホ時に画面スレスレまで広げつつ10pxだけ余白を残す */
+  .tour-info-box {
+    margin-left: calc(50% - 50vw + 10px);
+    margin-right: calc(50% - 50vw + 10px);
+    width: calc(100vw - 20px);
+    max-width: calc(100vw - 20px);
+    border-radius: 8px;
+    /* 丸みを見せるよう復活 */
+    border-left: 1px solid #e0e0e0;
+    /* 横の線を復活 */
+    border-right: 1px solid #e0e0e0;
+    /* 横の線を復活 */
+    padding: 24px 16px;
+    /* 内部の文字余白を調整 */
+  }
+
+  /* ギャラリーブロックをスマホ表示時に1列（縦並び）に強制する */
+  .wp-block-gallery.has-nested-images {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .wp-block-gallery.has-nested-images figure.wp-block-image {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-bottom: 16px !important;
+  }
+}
+
+/* ギャラリー画像の高級感を高める装飾 */
+.wp-block-gallery .wp-block-image img {
+  border-radius: 12px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.wp-block-gallery .wp-block-image img:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+@media screen and (max-width:479px) {
+
+  /* この投稿内（#main の中）の基文字サイズを指定 */
+  #main,
+  #main p {
+    font-size: 1.0rem;
+  }
+
+}
+
+/* =========================================
+   Umiack スライダー用スタイル
+   ========================================= */
+
+/* ─── ラッパー ─── */
+.umiack-slider-wrap {
+  position: relative;
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #0d0d0d;
+  user-select: none;
+  -webkit-user-select: none;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+}
+
+.umiack-slider {
+  position: relative;
+  overflow: hidden; /* スライドのはみ出しをここでクリップ */
+}
+
+/* ─── スライドトラック ─── */
+.umiack-slides {
+  display: flex;
+  /* overflow は .umiack-slider 側で管理。ここに設定すると
+     transform と overflow が同一要素になりスライドが黒くなる */
+  transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+  touch-action: pan-y; /* 水平方向のブラウザ挙動を抑制 */
+}
+
+.umiack-slide {
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #111;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.umiack-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+/* ─── ボタン共通 ─── */
+.umiack-btn {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+  z-index: 10;
+  padding: 0;
+}
+
+.umiack-btn svg {
+  display: block;
+  pointer-events: none;
+}
+
+/* ─── 前へ / 次へ ─── */
+.umiack-btn-prev,
+.umiack-btn-next {
+  top: 50%;
+  transform: translateY(-50%);
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.50);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #ffffff;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+}
+
+.umiack-btn-prev svg,
+.umiack-btn-next svg {
+  width: 26px;
+  height: 26px;
+}
+
+.umiack-btn-prev { left: 14px; }
+.umiack-btn-next { right: 14px; }
+
+.umiack-btn-prev:hover,
+.umiack-btn-next:hover {
+  background: rgba(0, 0, 0, 0.82);
+  transform: translateY(-50%) scale(1.08);
+}
+
+/* ─── 拡大ボタン ─── */
+.umiack-btn-expand {
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.50);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.umiack-btn-expand svg {
+  width: 18px;
+  height: 18px;
+}
+
+.umiack-btn-expand:hover {
+  background: rgba(0, 0, 0, 0.82);
+  transform: scale(1.1);
+}
+
+/* ─── ドットインジケーター ─── */
+.umiack-dots {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.umiack-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.45);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.umiack-dot.active {
+  background: #ffffff;
+  transform: scale(1.35);
+}
+
+/* ─── フルスクリーンモーダル ─── */
+.umiack-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.96);
+  z-index: 99999;
+  align-items: center;
+  justify-content: center;
+  touch-action: pan-y; /* 水平方向のブラウザ挙動を抑制 */
+}
+
+.umiack-modal.open {
+  display: flex;
+}
+
+.umiack-modal-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.umiack-modal-img {
+  max-width: 94vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 8px 60px rgba(0, 0, 0, 0.7);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+  display: block;
+}
+
+/* モーダルの前へ / 次へ */
+.umiack-modal-nav {
+  top: 50%;
+  transform: translateY(-50%);
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #ffffff;
+}
+
+.umiack-modal-nav svg {
+  width: 28px;
+  height: 28px;
+}
+
+.umiack-modal-prev { left: 16px; }
+.umiack-modal-next { right: 16px; }
+
+.umiack-modal-nav:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-50%) scale(1.08);
+}
+
+/* 閉じるボタン */
+.umiack-btn-close {
+  top: 16px;
+  right: 16px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #ffffff;
+}
+
+.umiack-btn-close svg {
+  width: 22px;
+  height: 22px;
+}
+
+.umiack-btn-close:hover {
+  background: rgba(255, 255, 255, 0.28);
+  transform: rotate(90deg) scale(1.1);
+}
+
+/* カウンター */
+.umiack-modal-counter {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 13px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+/* ─── スマホ対応 ─── */
+@media (max-width: 600px) {
+  .umiack-btn-prev,
+  .umiack-btn-next {
+    width: 42px;
+    height: 42px;
+  }
+  .umiack-btn-prev svg,
+  .umiack-btn-next svg {
+    width: 22px;
+    height: 22px;
+  }
+  .umiack-btn-prev { left: 8px; }
+  .umiack-btn-next { right: 8px; }
+  .umiack-modal-prev { left: 6px; }
+  .umiack-modal-next { right: 6px; }
+  .umiack-modal-nav {
+    width: 46px;
+    height: 46px;
+  }
+}

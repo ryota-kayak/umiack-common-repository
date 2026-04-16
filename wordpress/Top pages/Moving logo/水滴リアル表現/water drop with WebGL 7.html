@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>物理ベース水滴：レンズ拡大率補正で縁が薄くなる</title>
+  <style>
+    html, body {height: 100%; margin: 0;}
+    body {overflow: hidden;}
+    canvas {display: block;}
+  </style>
+</head>
+<body>
+<script src="https://unpkg.com/three@0.155.0/build/three.min.js"></script>
+<script id="fragShader" type="x-shader/x-fragment">
+precision highp float;
+uniform sampler2D uTexture;
+uniform vec2 uResolution;
+uniform vec2 uDrop;
+uniform vec2 uLight;
+
+float getRefractIndex(float w) {
+  // 水の色収差範囲（やや強調）
+  return mix(1.32, 1.375, w);
+}
+
+void main() {
+  vec2 aspect = vec2(uResolution.x / uResolution.y, 1.0);
+  vec2 uv = gl_FragCoord.xy / uResolution.xy;
+  vec2 dropCenter = uDrop;
+  float dropRadius = 0.20;
+  float d = length((uv - dropCenter) * aspect);
+  float ratio = d / dropRadius;
+  vec3 col = vec3(0.0);
+
+  if (d < dropRadius) {
+    float thickness = sqrt(dropRadius * dropRadius - d * d);
+    float eta_r = getRefractIndex(0.0);
+    float eta_g = getRefractIndex(0.5);
+    float eta_b = getRefractIndex(1.0);
+
+    vec3 V = vec3(0.0, 0.0, -1.0);
+    vec3 N = normalize(vec3((uv - dropCenter) * aspect, thickness));
+
+    vec3 refrR = refract(V, N, 1.0 / eta_r);
+    vec3 refrG = refract(V, N, 1.0 / eta_g);
+    vec3 refrB = refract(V, N, 1.0 / eta_b);
+
+    float chroma = 2.4;
+    vec2 sampleR = uv + chroma * refrR.xy * (dropRadius - d);
+    vec2 sampleG = uv + chroma * refrG.xy * (dropRadius - d);
+    vec2 sampleB = uv + chroma * refrB.xy * (dropRadius - d);
+
+    // --- 物理ベース：拡大率（ヤコビアン近似） ---
+    float eps = 0.002; // 微小オフセット
+    vec2 uv_dx = uv + vec2(eps, 0.0);
+    vec2 uv_dy = uv + vec2(0.0, eps);
+
+    // dx方向でのサンプリング先のズレ
+    vec3 N_dx = normalize(vec3((uv_dx - dropCenter) * aspect, thickness));
+    vec3 refrR_dx = refract(V, N_dx, 1.0 / eta_r);
+    vec3 refrG_dx = refract(V, N_dx, 1.0 / eta_g);
+    vec3 refrB_dx = refract(V, N_dx, 1.0 / eta_b);
+    vec2 sampleR_dx = uv_dx + chroma * refrR_dx.xy * (dropRadius - length((uv_dx - dropCenter) * aspect));
+    vec2 sampleG_dx = uv_dx + chroma * refrG_dx.xy * (dropRadius - length((uv_dx - dropCenter) * aspect));
+    vec2 sampleB_dx = uv_dx + chroma * refrB_dx.xy * (dropRadius - length((uv_dx - dropCenter) * aspect));
+
+    // dy方向でのサンプリング先のズレ
+    vec3 N_dy = normalize(vec3((uv_dy - dropCenter) * aspect, thickness));
+    vec3 refrR_dy = refract(V, N_dy, 1.0 / eta_r);
+    vec3 refrG_dy = refract(V, N_dy, 1.0 / eta_g);
+    vec3 refrB_dy = refract(V, N_dy, 1.0 / eta_b);
+    vec2 sampleR_dy = uv_dy + chroma * refrR_dy.xy * (dropRadius - length((uv_dy - dropCenter) * aspect));
+    vec2 sampleG_dy = uv_dy + chroma * refrG_dy.xy * (dropRadius - length((uv_dy - dropCenter) * aspect));
+    vec2 sampleB_dy = uv_dy + chroma * refrB_dy.xy * (dropRadius - length((uv_dy - dropCenter) * aspect));
+
+    // ヤコビアン近似（面積比）
+    float areaR = abs((sampleR_dx.x - sampleR.x) * (sampleR_dy.y - sampleR.y) - (sampleR_dx.y - sampleR.y) * (sampleR_dy.x - sampleR.x)) / (eps * eps);
+    float areaG = abs((sampleG_dx.x - sampleG.x) * (sampleG_dy.y - sampleG.y) - (sampleG_dx.y - sampleG.y) * (sampleG_dy.x - sampleG.x)) / (eps * eps);
+    float areaB = abs((sampleB_dx.x - sampleB.x) * (sampleB_dy.y - sampleB.y) - (sampleB_dx.y - sampleB.y) * (sampleB_dy.x - sampleB.x)) / (eps * eps);
+
+    // area値が大きい（拡大率大＝薄くなる）部分で、色を減衰
+    areaR = max(areaR, 1.0);
+    areaG = max(areaG, 1.0);
+    areaB = max(areaB, 1.0);
+
+    col.r = texture2D(uTexture, clamp(sampleR, 0.0, 1.0)).r / areaR;
+    col.g = texture2D(uTexture, clamp(sampleG, 0.0, 1.0)).g / areaG;
+    col.b = texture2D(uTexture, clamp(sampleB, 0.0, 1.0)).b / areaB;
+
+    // ハイライト
+    vec2 lightVec2D = normalize(uLight - dropCenter);
+    vec3 lightDir = normalize(vec3(lightVec2D, 0.7));
+    float diffuse = 0.93 + 0.12 * max(0.0, dot(N, lightDir));
+    vec3 viewDir = vec3(0.0,0.0,1.0);
+    vec3 halfDir = normalize(lightDir + viewDir);
+    float spec = pow(max(0.0, dot(N, halfDir)), 55.0);
+    float specular = spec * (1.0 - ratio) * 2.1;
+
+    float alpha = 0.42 + 0.6 * pow(1.0 - ratio, 0.37);
+
+    col = col * diffuse + vec3(specular);
+
+    // 虹色フチ（色収差誇張）
+    if (abs(d - dropRadius) < 0.017) {
+      float rim = smoothstep(0.017, 0.0, abs(d - dropRadius));
+      col += vec3(rim*0.9, rim*0.4, rim);
+      alpha = max(alpha, rim*0.72);
+    }
+
+    gl_FragColor = vec4(col, alpha);
+
+  } else {
+    col = texture2D(uTexture, uv).rgb;
+    gl_FragColor = vec4(col, 1.0);
+  }
+}
+</script>
+<script>
+const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+const scene = new THREE.Scene();
+
+let mouse = { x: 0.5, y: 0.5 };
+const light = { x: 0.96, y: 0.90 };
+
+// コントラストの高い背景画像（Unsplash）
+const imgUrl = 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=1200&q=80';
+const loader = new THREE.TextureLoader();
+loader.setCrossOrigin('anonymous');
+loader.load(imgUrl, texture => {
+  const material = new THREE.ShaderMaterial({
+    uniforms: {
+      uTexture: { value: texture },
+      uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+      uDrop: { value: new THREE.Vector2(mouse.x, mouse.y) },
+      uLight: { value: new THREE.Vector2(light.x, light.y) }
+    },
+    fragmentShader: document.getElementById('fragShader').textContent,
+    transparent: true
+  });
+  const geometry = new THREE.PlaneGeometry(2, 2);
+  const mesh = new THREE.Mesh(geometry, material);
+  scene.add(mesh);
+
+  window.addEventListener('resize', () => {
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    material.uniforms.uResolution.value.set(window.innerWidth, window.innerHeight);
+  });
+
+  window.addEventListener('pointermove', e => {
+    mouse.x = e.clientX / window.innerWidth;
+    mouse.y = 1.0 - (e.clientY / window.innerHeight);
+  });
+
+  renderer.setAnimationLoop(() => {
+    material.uniforms.uDrop.value.set(mouse.x, mouse.y);
+    material.uniforms.uLight.value.set(light.x, light.y);
+    renderer.render(scene, camera);
+  });
+});
+</script>
+</body>
+</html>

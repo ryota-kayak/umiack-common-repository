@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Canvas Water Drop Lens Effect</title>
+  <style>
+    html, body {margin: 0; height: 100%; overflow: hidden;}
+    canvas {display: block; width: 100vw; height: 100vh; background: #333;}
+  </style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+// Load background image
+const imageUrl = 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80';
+const bgImage = new Image();
+bgImage.crossOrigin = 'Anonymous';
+bgImage.src = imageUrl;
+
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+
+// Handle resizing
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+// Drop state
+let dropX = window.innerWidth / 2;
+let dropY = window.innerHeight / 2;
+const dropRadius = 120;
+const magnification = 1.6;
+
+canvas.onpointermove = e => {
+  dropX = e.clientX;
+  dropY = e.clientY;
+};
+
+// Drawing functions
+function drawDropLens(ctx, img, cx, cy, r, mag) {
+  // Only draw if image loaded
+  if (!img.complete) return;
+  // Get a square region of the background image (as pixel data)
+  const sx = Math.max(0, cx - r);
+  const sy = Math.max(0, cy - r);
+  const sw = Math.min(img.width, 2*r);
+  const sh = Math.min(img.height, 2*r);
+
+  // Fit the image to the canvas
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+  // Extract pixel data from the background (at full canvas res)
+  let imageData;
+  try {
+    imageData = ctx.getImageData(cx - r, cy - r, 2 * r, 2 * r);
+  } catch (e) {
+    return; // Cross-origin error, image not loaded, etc.
+  }
+  const src = imageData.data;
+  const output = ctx.createImageData(2 * r, 2 * r);
+  const dst = output.data;
+
+  for (let y = 0; y < 2 * r; y++) {
+    for (let x = 0; x < 2 * r; x++) {
+      const dx = x - r;
+      const dy = y - r;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist > r) continue;
+      // Lens mapping: center pixels magnified, edge normal
+      const theta = Math.atan2(dy, dx);
+      const lensR = dist / r;
+      const factor = 1 + (mag - 1) * (1 - lensR * lensR); // Quadratic falloff
+      const sx2 = Math.round(r + dx / factor);
+      const sy2 = Math.round(r + dy / factor);
+
+      if (sx2 < 0 || sx2 >= 2 * r || sy2 < 0 || sy2 >= 2 * r) continue;
+      const sIdx = 4 * (sy2 * 2 * r + sx2);
+      const dIdx = 4 * (y * 2 * r + x);
+
+      dst[dIdx + 0] = src[sIdx + 0];
+      dst[dIdx + 1] = src[sIdx + 1];
+      dst[dIdx + 2] = src[sIdx + 2];
+      // Transparency: more transparent at the edge
+      dst[dIdx + 3] = 180 + 60 * (1 - lensR);
+    }
+  }
+  // Put drop back on canvas
+  ctx.putImageData(output, cx - r, cy - r);
+
+  // Highlight (sparkle)
+  ctx.save();
+  ctx.globalAlpha = 0.18;
+  ctx.beginPath();
+  ctx.arc(cx - r * 0.32, cy - r * 0.32, r * 0.38, 0, Math.PI * 2);
+  ctx.fillStyle = "#fff";
+  ctx.filter = "blur(2px)";
+  ctx.fill();
+  ctx.filter = "none";
+  ctx.globalAlpha = 1.0;
+  ctx.restore();
+
+  // Caustic rim
+  ctx.save();
+  ctx.strokeStyle = "rgba(255,255,255,0.52)";
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.arc(cx, cy, r - 1, 0, Math.PI * 2);
+  ctx.shadowColor = "#fff";
+  ctx.shadowBlur = 7;
+  ctx.stroke();
+  ctx.restore();
+}
+
+function animate() {
+  if (bgImage.complete && bgImage.naturalWidth > 0) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
+    drawDropLens(ctx, bgImage, dropX, dropY, dropRadius, magnification);
+  }
+  requestAnimationFrame(animate);
+}
+
+bgImage.onload = animate;
+</script>
+</body>
+</html>

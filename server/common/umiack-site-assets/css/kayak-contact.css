@@ -1,0 +1,339 @@
+/* =========================================
+   Contact | Kayak Guide
+   full replacement CSS
+   page-id 指定なし
+   field 固有 ID 指定なし
+   form 固有 ID 指定なし
+   WPForms の Additional CSS Classes で制御
+========================================= */
+
+/* ---------- page base ---------- */
+
+body.public-page {
+  background: #f4f7fb;
+}
+
+#main.main {
+  width: 100%;
+  max-width: 980px;
+  float: none;
+  margin: 44px auto 84px;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+.container,
+.content,
+.content-in,
+.main {
+  background-color: #2a3440;
+}
+
+/* ---------- single white card ---------- */
+
+.article {
+  background: #ffffff;
+  border: 1px solid #e5ebf2;
+  border-radius: 22px;
+  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+}
+
+.article-header,
+.entry-content,
+.wpforms-container,
+.wpforms-container form,
+.wpforms-container .wpforms-field-container {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* ---------- header ---------- */
+
+.article-header {
+  display: block;
+  margin: 0;
+  padding: 38px 42px 22px;
+  border: 0;
+  border-bottom: 1px solid #eef2f6;
+}
+
+.entry-title,
+.no-page-title .entry-title {
+  display: block !important;
+  margin: 0 !important;
+  font-size: 32px;
+  line-height: 1.25;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #1f2937;
+}
+
+.date-tags,
+.eye-catch-wrap {
+  display: none !important;
+}
+
+/* ---------- content area ---------- */
+
+.entry-content {
+  padding: 34px 42px 40px;
+  margin: 0;
+}
+
+/* ---------- wpforms base ---------- */
+
+.wpforms-container {
+  margin: 0 !important;
+}
+
+.wpforms-container .wpforms-field {
+  padding: 0 !important;
+}
+
+/* ---------- layout ---------- */
+
+.wpforms-container .wpforms-field-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px 26px;
+  align-items: flex-start;
+}
+
+/* full-width fields */
+.wpforms-container .field-email,
+.wpforms-container .field-preferred-date,
+.wpforms-container .field-message {
+  flex: 1 1 100%;
+  max-width: 100%;
+}
+
+/* name fields */
+.wpforms-container .field-last-name,
+.wpforms-container .field-first-name {
+  flex: 0 0 11em;
+  max-width: 11em;
+}
+
+/* inquiry type */
+.wpforms-container .field-inquiry-type {
+  flex: 0 0 21em;
+  max-width: 21em;
+}
+
+/* participants */
+.wpforms-container .field-party-size {
+  flex: 0 0 15em;
+  max-width: 15em;
+  margin-left: calc(50% - 18em - 26px);
+}
+
+/* experience */
+.wpforms-container .field-experience {
+  flex: 0 0 28em;
+  max-width: 28em;
+}
+
+/* ---------- labels ---------- */
+
+.wpforms-container .wpforms-field-label {
+  display: block;
+  margin-bottom: 9px !important;
+  font-size: 14px;
+  line-height: 1.45;
+  font-weight: 700;
+  color: #111827;
+}
+
+.wpforms-container .wpforms-required-label {
+  color: #d64b55;
+}
+
+.wpforms-container .wpforms-field-description {
+  margin-top: 8px !important;
+  font-size: 13px;
+  line-height: 1.65;
+  color: #6b7280;
+}
+
+/* keep this label on one line */
+.wpforms-container .field-party-size .wpforms-field-label {
+  white-space: nowrap;
+}
+
+/* ---------- inputs ---------- */
+
+.wpforms-container .wpforms-field input[type="text"],
+.wpforms-container .wpforms-field input[type="email"],
+.wpforms-container .wpforms-field select,
+.wpforms-container .wpforms-field textarea,
+.wpforms-container .wpforms-field .wpforms-field-medium,
+.wpforms-container .wpforms-field .wpforms-field-small {
+  width: 100% !important;
+  max-width: none !important;
+  box-sizing: border-box;
+  border: 1px solid #ccd7e4;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #111827;
+  font-size: 16px;
+  line-height: 1.5;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.wpforms-container .wpforms-field input[type="text"],
+.wpforms-container .wpforms-field input[type="email"],
+.wpforms-container .wpforms-field select {
+  min-height: 56px;
+  padding: 0 16px;
+}
+
+.wpforms-container .wpforms-field textarea {
+  min-height: 190px;
+  padding: 14px 16px;
+  resize: vertical;
+}
+
+.wpforms-container .wpforms-field select {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 42px;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #738195 50%),
+    linear-gradient(135deg, #738195 50%, transparent 50%);
+  background-position:
+    calc(100% - 22px) calc(50% - 3px),
+    calc(100% - 16px) calc(50% - 3px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+}
+
+.wpforms-container .field-party-size select,
+.wpforms-container .field-experience select {
+  font-size: 15px;
+}
+
+.wpforms-container .wpforms-field input[type="text"]::placeholder,
+.wpforms-container .wpforms-field input[type="email"]::placeholder,
+.wpforms-container .wpforms-field textarea::placeholder {
+  color: #9aa4b2;
+}
+
+.wpforms-container .wpforms-field input[type="text"]:focus,
+.wpforms-container .wpforms-field input[type="email"]:focus,
+.wpforms-container .wpforms-field select:focus,
+.wpforms-container .wpforms-field textarea:focus {
+  border-color: #0f79ad;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(15, 121, 173, 0.10);
+  outline: none;
+}
+
+/* ---------- submit ---------- */
+
+.wpforms-container .wpforms-submit-container {
+  margin-top: 30px;
+  padding: 0;
+  text-align: right;
+}
+
+.wpforms-container .wpforms-submit {
+  min-width: 188px;
+  height: 52px;
+  padding: 0 26px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #0f76ab, #0b8ab8);
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  box-shadow: 0 10px 24px rgba(15, 121, 173, 0.20);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.wpforms-container .wpforms-submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(15, 121, 173, 0.22);
+}
+
+.wpforms-container .wpforms-submit:active {
+  transform: translateY(0);
+}
+
+/* ---------- breadcrumb ---------- */
+
+.breadcrumb,
+.breadcrumb.sbp {
+  margin-top: 22px;
+  color: #7b8794;
+  font-size: 13px;
+}
+
+/* ---------- mobile ---------- */
+
+@media screen and (max-width: 767px) {
+  #main.main {
+    max-width: 100%;
+    margin: 22px auto 56px;
+    padding: 0 14px;
+  }
+
+  .article {
+    border-radius: 18px;
+  }
+
+  .article-header {
+    padding: 28px 22px 18px;
+  }
+
+  .entry-title,
+  .no-page-title .entry-title {
+    font-size: 26px;
+    line-height: 1.3;
+  }
+
+  .entry-content {
+    padding: 24px 22px 30px;
+  }
+
+  .wpforms-container .wpforms-field-container {
+    display: block;
+  }
+
+  .wpforms-container .field-last-name,
+  .wpforms-container .field-first-name,
+  .wpforms-container .field-inquiry-type,
+  .wpforms-container .field-party-size,
+  .wpforms-container .field-experience,
+  .wpforms-container .field-email,
+  .wpforms-container .field-preferred-date,
+  .wpforms-container .field-message {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0 !important;
+    margin-bottom: 18px !important;
+  }
+
+  .wpforms-container .field-party-size .wpforms-field-label {
+    white-space: normal;
+  }
+
+  .wpforms-container .wpforms-submit-container {
+    text-align: center;
+  }
+
+  .wpforms-container .wpforms-submit {
+    width: 100%;
+    min-width: 0;
+  }
+}

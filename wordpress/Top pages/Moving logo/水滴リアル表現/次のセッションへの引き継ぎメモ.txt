@@ -1,0 +1,147 @@
+スーパーサンプリング水滴WebGL Three.js ES Modules版
+
+主旨
+・Three.jsとGLSLシェーダーで物理ベース水滴を高解像度で生成
+・高解像度WebGLレンダリングを小サイズcanvasにdrawImageで縮小するスーパーサンプリング方式
+・黒縁やジャギーを徹底的に減らしロゴ用途やWeb実装にも最適化
+・ES ModulesでCDNからthree.jsをimportする方式（現代的WordPressやWebに安全・普遍）
+
+問題点と解決手順の履歴
+
+1. 背景画像読込エラー
+・file://スキームでローカル画像を読み込むとCORS制約でエラー発生（Chromeの仕様）
+・解決：CORS対応の外部画像URL（Unsplash等）を利用することで問題を回避
+
+2. 黒画面しか表示されない
+・WebGLレンダリングのレンダリング先、drawImageのタイミング、setRenderTargetの使用タイミングが不適切だった場合に黒画面
+・原因の一つは、WebGLRenderTargetからの内容をdrawImageする際に、renderer.domElementの内容が直近のフレームでなかったこと
+・解決：renderer.setRenderTarget(null)で通常のcanvas描画に戻し、renderer.domElementの内容を直接canvas2DにdrawImageすればよい
+・また、最小動作検証として「フラグメントシェーダで強制的に赤色だけを出力」することで描画・ロジック双方の問題切り分けを実施
+・WebGLRendererのpreserveDrawingBuffer:trueオプションも必須
+
+3. ES Modulesとthree.jsのバージョン対応
+・scriptタグにtype="module"を指定しないとimport * as THREE from '...'が動作しない
+・CDNのthree.jsは必ず"three.module.js"を指定する必要がある
+・three.jsのバージョン違いやimport方法ミスで何も描画されないことがあるため注意
+
+4. スーパーサンプリング縮小（アンチエイリアス）が効かない・何も描画されない
+・WebGLRenderTargetに対して直接drawImageしようとすると正常にコピーできない場合がある
+・解決：レンダリングはrenderer.render(scene, camera)でhiResサイズのcanvasに出力し、そのrenderer.domElementからcanvas2DにdrawImageで縮小転写することで必ず成功する
+
+5. マウスイベントが反応しない
+・canvasのwidth/height属性とstyleのサイズを一致させる必要がある
+・getBoundingClientRectから正しい座標正規化が必要
+
+6. WordPress等Web本番環境での組み込み
+・ES Modules import形式＋外部画像＋canvas要素のみで完結するため安全に統合可能
+
+サンプルコード
+（htmlの中身、必要最小限のみ）
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>スーパーサンプリング水滴</title>
+  <style>
+    body { background: #222; display: flex; align-items: center; justify-content: center; height: 100vh; }
+    #finalCanvas { width: 64px; height: 64px; image-rendering: auto; }
+  </style>
+</head>
+<body>
+<canvas id="finalCanvas" width="64" height="64"></canvas>
+<script type="module">
+import * as THREE from 'https://unpkg.com/three@0.155.0/build/three.module.js';
+const SSAA = 4;
+const hiRes = 64 * SSAA;
+const loRes = 64;
+const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true, preserveDrawingBuffer:true});
+renderer.setSize(hiRes, hiRes);
+renderer.setClearColor(0x000000, 0);
+const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+const scene = new THREE.Scene();
+let mouse = { x: 0.5, y: 0.5 };
+let light = { x: 0.7, y: 0.25 };
+const imgUrl = 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=512&q=80';
+const loader = new THREE.TextureLoader();
+loader.load(imgUrl, texture => {
+  const material = new THREE.ShaderMaterial({
+    uniforms: {
+      uTexture: { value: texture },
+      uResolution: { value: new THREE.Vector2(hiRes, hiRes) },
+      uDrop: { value: new THREE.Vector2(mouse.x, mouse.y) },
+      uLight: { value: new THREE.Vector2(light.x, light.y) }
+    },
+    fragmentShader: `
+      precision highp float;
+      uniform sampler2D uTexture;
+      uniform vec2 uResolution;
+      uniform vec2 uDrop;
+      uniform vec2 uLight;
+      void main() {
+        vec2 aspect = vec2(uResolution.x / uResolution.y, 1.0);
+        vec2 uv = gl_FragCoord.xy / uResolution.xy;
+        vec2 dropCenter = uDrop;
+        float dropRadius = 0.20;
+        float d = length((uv - dropCenter) * aspect);
+        float edgeSoftness = 0.012;
+        float inDrop = smoothstep(dropRadius, dropRadius - edgeSoftness, d);
+        vec3 col_bg = texture2D(uTexture, uv).rgb;
+        vec3 col_drop = col_bg;
+        float alpha_drop = 0.0;
+        if (d < dropRadius) {
+          float thickness = sqrt(dropRadius * dropRadius - d * d);
+          float eta = 1.36;
+          vec3 V = vec3(0.0, 0.0, -1.0);
+          vec3 Nrm = normalize(vec3((uv - dropCenter) * aspect, thickness));
+          vec3 refr = refract(V, Nrm, 1.0 / eta);
+          float chroma = 2.4;
+          vec2 uv_samp = uv + chroma * refr.xy * (dropRadius - d);
+          col_drop = texture2D(uTexture, clamp(uv_samp, 0.0, 1.0)).rgb;
+          vec2 lightVec2D = normalize(uLight - dropCenter);
+          vec3 lightDir = normalize(vec3(lightVec2D, 0.7));
+          vec3 viewDir = vec3(0.0, 0.0, 1.0);
+          vec3 halfDir = normalize(lightDir + viewDir);
+          float spec = pow(max(0.0, dot(Nrm, halfDir)), 50.0);
+          float specular = spec * (1.0 - d/dropRadius) * 2.2;
+          col_drop = mix(col_drop, vec3(1.0), clamp(specular, 0.0, 1.0));
+          alpha_drop = 0.55 + 0.35 * pow(1.0 - d/dropRadius, 0.37);
+        }
+        vec3 col = mix(col_bg, col_drop, inDrop);
+        float alpha = mix(1.0, alpha_drop, inDrop);
+        gl_FragColor = vec4(col, alpha);
+      }
+    `,
+    transparent: true
+  });
+  const geometry = new THREE.PlaneGeometry(2, 2);
+  const mesh = new THREE.Mesh(geometry, material);
+  scene.add(mesh);
+  const finalCanvas = document.getElementById('finalCanvas');
+  const ctx = finalCanvas.getContext('2d');
+  function renderAndDownsample() {
+    material.uniforms.uDrop.value.set(mouse.x, mouse.y);
+    material.uniforms.uLight.value.set(light.x, light.y);
+    renderer.render(scene, camera);
+    ctx.clearRect(0, 0, loRes, loRes);
+    ctx.drawImage(renderer.domElement, 0, 0, hiRes, hiRes, 0, 0, loRes, loRes);
+    requestAnimationFrame(renderAndDownsample);
+  }
+  renderAndDownsample();
+  finalCanvas.addEventListener('pointermove', (e) => {
+    const rect = finalCanvas.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = 1.0 - (e.clientY - rect.top) / rect.height;
+    mouse.x = x;
+    mouse.y = y;
+  });
+});
+</script>
+</body>
+</html>
+
+このコード断片がこのまま次のセッションの新しいChatGPTへの引き継ぎ用生データとなる
+背景画像URLは任意差し替え可
+canvasサイズや倍率は自由に変更可能
+ES Modulesインポート形式で安全
+waterdrop shaderは屈折＋反射＋エッジAA実装済み

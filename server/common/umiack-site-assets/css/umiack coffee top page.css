@@ -1,0 +1,361 @@
+/* umiack coffee */
+
+/*
+* {
+  outline: 1px solid rgba(255, 0, 0, 0.5);
+}
+*/
+
+.entry-content > div,
+.article h2 {
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+  font-family:
+    /* 1) System UI font on Apple devices (San Francisco) and other platforms */
+    -apple-system,    /* Safari, WebKit on macOS/iOS */
+    system-ui,        /* other modern browsers */  
+    /* 2) Your Japanese font stack */
+    "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3",
+    Meiryo, "ＭＳ Ｐゴシック",
+    /* 3) Standard web-safe fallbacks */
+    "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* バックグラウンド画像やその他のエレメントを、ブラウザの幅一杯に表示させるための措置 */
+#main {
+    padding: 0;
+    border: 0;
+}
+
+/* ブラウザーの幅が広くなりすぎたら、コンテンツの幅を抑制するためにある。その抑制を解除する */
+.wrap {
+    width: 100%;
+}
+
+/* 
+  The .sr-only class is used to hide elements visually while keeping them accessible 
+  to screen readers. This is useful for including important information for accessibility 
+  and SEO without cluttering the visible design.
+*/
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* UMIACKのロゴのバックグラウンド画像より全面に出すため */
+#header-container {
+    position: relative !important;
+    z-index: 1;
+}
+
+#footer {
+    position: relative;
+    z-index: 1;
+}
+
+/*
+Background Media
+*/
+/* Background Video Loading animation */
+#loading_animation {
+    position: fixed;
+    top: 0 !important;
+    left: 0;
+    margin: 0;
+    min-width: 100%; 
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -99; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#loading_animation img {
+	width: 100px;
+	height: 100px;
+}
+/* Background Media */
+#background_video {
+    position: fixed;
+    top: 0 !important;
+    left: 0;
+    margin: 0;
+    min-width: 100%; 
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -100; /* Keep the video behind other content */
+    object-fit: cover;
+    overflow: hidden; /* Hide the parts of the video that are outside the viewport */
+}
+#background_image_1,
+#background_image_2,
+#background_image_3,
+#background_image_4 {
+	position: fixed;
+	top: 0;
+	left: 0;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center;
+	min-width: 100%;
+	height: 100vh;
+	z-index: -101; /* Keep the video behind other content */
+	display: none;
+}
+/* Scrolling Animation */
+#scrolling_animation_container {
+	position: fixed;
+	top: 10vh;
+	left: 10vw;
+	z-index: 100;
+}
+#scrolling_animation {
+	width: 10vh;
+	height: 10vh;
+	display: none;
+}
+.dummy_space_for_scroll {
+	width: 100%;
+}
+
+/* Article */
+.main_article {
+	width: 100%;
+	background-color: white;
+	margin-bottom: 0;
+}
+
+/* spacer */
+.spacer {
+    margin-top: -1px; /* Delete Subpixel Rendering Artifacts */
+    margin-bottom: -1px; /* Delete Subpixel Rendering Artifacts */
+	width: 100%;
+	height: 50px;
+	background-color: white;
+}
+
+/* wave image */
+.wave {
+    margin: 0;
+    width: 100vw;
+}
+.wave_upper {
+	margin-top: 100vh;
+}
+.wave_lower {
+	transform: rotate(180deg);
+}
+
+/*
+umiack coffee Logo
+from here
+*/
+#parallax_container {
+    height: 900px;
+	background-color: white;
+	margin: 0px;
+}
+
+#logo_container {
+  position: sticky; 
+  top: 100px;
+  height: 500px;
+  overflow: visible;
+}
+#logo_container img {
+    position: absolute;
+}
+#img_1{
+	top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin-left: auto;
+    margin-right: auto;
+}
+#img_2{ /* 豆 */
+	top: 339px;
+	left: -97px;
+	right: 0;
+	bottom: 0;
+	margin-left: auto;
+	margin-right: auto;
+}
+@media screen and ( max-width:479px ) {
+    #logo_container {
+        height: 313px;
+    }
+    #img_1 {
+        width: 250px;
+    }
+    #img_2 {
+        width: 21px;
+    }
+}
+
+/* タイトルを表示しない */
+.entry-title {
+  display: none;
+}
+
+#area-1 {
+    background: #eeeeee;
+    padding-top: 40px;
+    padding-bottom: 20px;
+    margin-top: 100px;
+    margin-bottom: 100px;
+}
+
+/* umiack Coffeeのロゴとタイトル */
+@font-face {
+	font-family: "minionProBold";
+	src: url(/fonts/Minion-Pro-Bold_subset.ttf);
+} 
+@font-face {
+	font-family: "georgiaBoldItalic";
+	src: url(/fonts/georgia_bold_italic_subset.ttf);
+} 
+@font-face {
+	font-family: "gnenokakuGothic";
+	src: url(/fonts/Gennokaku_Gothic_Heavy.otf);
+} 
+@font-face {
+	font-family: "kouzanMouhituFont";
+	src: url(/fonts/KouzanMouhituFont_subset.otf);
+} 
+@font-face {
+	font-family: "helloKetta";
+	src: url(/fonts/HelloKetta-d99oX_subset.ttf);
+}
+#company_names{
+    font-size: 45px;
+    text-align: center;
+    font-weight: normal;
+    background-color: white;
+}
+#company_name_first{
+    font-family: minionProBold;
+}
+#company_name_last{
+    font-family: georgiaBoldItalic;
+}
+#company_name_Japanese{
+    font-family: gnenokakuGothic;
+    font-size: 40px;
+}
+#hand_roasting{
+    text-align: center;
+    margin-top: 60px;
+    margin-bottom: 0px;
+    font-family: kouzanMouhituFont;
+    font-size: 60px;
+}
+#life_is{
+    text-align: center;
+    font-family: helloKetta;
+    font-size: 50px;
+    background-color: white;
+}
+#life_is #life_is_a, #life_is #life_is_b{
+    margin-right: 20px;
+}
+
+/*
+Links
+*/
+.links {
+    position: relative;
+    width: 100%;
+    height: 700px;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+}
+.links-text-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;  /* vertical centering */
+  align-items: center;      /* horizontal centering + stops stretch */
+  height: 350px;
+}
+#coffee-sales {
+    background-image: url("/wp-content/uploads/2025/04/background-coffee-l.webp");
+    background-size: cover;
+}
+#mountain-coffee-roast {
+    background-image: url("/wp-content/uploads/2025/05/background-umiack-cafe.webp");
+    background-size: auto 100%;
+    background-color: #4990ff;
+}
+.links h2 {
+    padding-bottom: 50px;
+    font-size: 2rem;
+    color: white;
+    /* ensure no opaque bg */
+    background-color: transparent;
+}
+.links .btn {
+  display: inline-block;
+  width: auto;              /* prevent full width */
+  padding: 0.5em 1em;
+  border-width: 0;
+  border-radius: 9999px;
+  text-decoration: none;
+  color: #fff;
+  background: #0071e3;
+  transition: background-color 0.3s, color 0.3s;
+}
+.links .btn:hover {
+    background-color: #fff;
+    color: #333;
+}
+.spacer2 {
+  height: 20px;
+  width: 100%;
+  background-color: #fff;
+}
+@media screen and ( max-width:479px ) {
+    .links {
+        height: 100vw;
+    }
+    .links-text-container {
+        height: 50vw;
+    }
+    #coffee-sales {
+        background-image: url("/wp-content/uploads/2025/04/background-coffee-s.webp");
+    }
+    .links h2 {
+        font-size: calc(7vw);
+        padding-bottom: 20px;
+    }
+}
+
+@media screen and ( max-width:479px ) {
+    #company_names{
+        font-size: 35px;
+    }
+	#company_name_Japanese{
+	    font-size: 30px;
+    }
+	#life_is{
+	    font-size: 30px;
+	}
+	/* 投稿のリスト */
+	.card-title{
+		font-size: calc(3vw);
+	}
+}

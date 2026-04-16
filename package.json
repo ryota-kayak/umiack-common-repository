@@ -1,0 +1,14 @@
+{
+  "name": "umiack-common-repository",
+  "version": "1.0.0",
+  "description": "Professional build pipeline for umiack common assets",
+  "scripts": {
+    "build": "bash ./scripts/build.sh",
+    "clean": "rm -rf dist/*"
+  },
+  "devDependencies": {
+    "lightningcss-cli": "^1.25.1",
+    "esbuild": "^0.20.2",
+    "html-minifier-terser": "^7.2.0"
+  }
+}

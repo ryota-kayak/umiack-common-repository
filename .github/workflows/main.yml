@@ -36,12 +36,15 @@ jobs:
           strip_components: 2
 
       - name: 🧼 Surgical Sync (Cleanup tours folder only)
-        uses: CONTRAST-Security-OSS/rsync-deploy@v3
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
-          # Only sync the tours directory to ensure other server folders are untouched
-          source: "dist/server/common/umiack-site-assets/img/tours/"
-          target: "/home/umiack/www/common/umiack-site-assets/img/tours/"
-          flags: "-avz --delete"
-          host: ${{ secrets.SFTP_HOST }}
-          user: ${{ secrets.SFTP_USERNAME }}
+          server: ${{ secrets.SFTP_HOST }}
+          username: ${{ secrets.SFTP_USERNAME }}
           password: ${{ secrets.SFTP_PASSWORD }}
+          protocol: sftp
+          port: 22
+          # Scope to the tours folder for safety
+          local-dir: dist/server/common/umiack-site-assets/img/tours/
+          server-dir: /home/umiack/www/common/umiack-site-assets/img/tours/
+          # MIRROR: Delete files/folders from server that are not in local-dir
+          delete-orphans: true

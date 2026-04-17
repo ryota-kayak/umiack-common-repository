@@ -10,6 +10,26 @@ const DIST_IMG_BASE = path.join(ROOT_DIR, 'dist/server/common/umiack-site-assets
 
 const SIZES = [400, 800, 1200, 1600];
 
+/**
+ * Converts a string into a URL-safe slug.
+ * - Lowercase
+ * - Spaces/Underscores to Hyphens
+ * - Remove non-alphanumeric characters (except hyphens)
+ */
+function slugify(text) {
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/[\s_]+/g, '-')     // Replace spaces and underscores with -
+    .replace(/[^\w-]+/g, '')     // Remove all non-word chars (keeps a-z, 0-9, _) -- wait, \w includes _
+    .replace(/[^\w-]+/g, '')     // Let's be explicit:
+    .replace(/[^a-z0-9-]/g, '')  // Keep only a-z, 0-9, and -
+    .replace(/-+/g, '-')         // Replace multiple - with single -
+    .replace(/^-+/, '')          // Trim - from start
+    .replace(/-+$/, '');         // Trim - from end
+}
+
 async function optimizeImages() {
   console.log('🚀 Starting professional image optimization pipeline...');
 
@@ -33,7 +53,8 @@ async function optimizeImages() {
       continue;
     }
 
-    console.log(`\n📦 Processing tour: ${tourName}`);
+    const tourSlug = slugify(tourName) || tourName;
+    console.log(`\n📦 Processing tour: ${tourName} (Slug: ${tourSlug})`);
     const imagesJson = JSON.parse(await fs.readFile(jsonPath, 'utf-8'));
     const manifest = [];
 
@@ -41,7 +62,7 @@ async function optimizeImages() {
     const sortedImages = imagesJson.sort((a, b) => (a.order || 0) - (b.order || 0));
 
     // Create tour-specific dist dir
-    const tourDistDir = path.join(DIST_IMG_BASE, tourName);
+    const tourDistDir = path.join(DIST_IMG_BASE, tourSlug);
     await fs.mkdir(tourDistDir, { recursive: true });
 
     for (const imgSpec of sortedImages) {
@@ -86,8 +107,8 @@ async function optimizeImages() {
 
         responsiveData.variants.push({
           width: size,
-          webp: `/common/umiack-site-assets/img/tours/${tourName}/${webpName}`,
-          jpg: `/common/umiack-site-assets/img/tours/${tourName}/${jpgName}`
+          webp: `/common/umiack-site-assets/img/tours/${tourSlug}/${webpName}`,
+          jpg: `/common/umiack-site-assets/img/tours/${tourSlug}/${jpgName}`
         });
       }
 

@@ -41,7 +41,20 @@
     const images = [];
 
     // --- 4. Dynamic Loading (Manifest Strategy) ---
-    const tourId = WID.getAttribute('data-tour');
+    const slugify = (text) => {
+      return text
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/[\s_]+/g, '-')
+        .replace(/[^a-z0-9-]/g, '')
+        .replace(/-+/g, '-')
+        .replace(/^-+/, '')
+        .replace(/-+$/, '');
+    };
+
+    const rawTourId = WID.getAttribute('data-tour');
+    const tourId = rawTourId ? slugify(rawTourId) : null;
     if (tourId) {
       try {
         const response = await fetch(`/common/umiack-site-assets/img/tours/${tourId}/images-manifest.json`);

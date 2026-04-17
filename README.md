@@ -44,9 +44,13 @@ graph TD
 *   フォルダ名は `01 Skytree Tour` のように、人間にとって読みやすく管理しやすい名前を付けます。
 
 ### 2. 公開用パスの自動Slug化 (Automated Slugification)
-*   ビルドプロセスにおいて、フォルダ名は自動的にURLセーフな「Slug」に変換されます。
-    *   例: `01 Skytree Tour` → `01-skytree-tour`
-*   フロントエンド（スライダー）も同じルールでパスを解決するため、HTML側で人間用の名前を指定しても正しく画像が読み込まれます。
+*   **フォルダ名とIDの完全一致**:
+    *   `src/wordpress/Kayak Tours/` 下の**フォルダ名**と、`tour_main.html` の **`data-tour` 属性の値**は、表記を完全に一致させてください（大文字小文字・スペース含む）。
+    *   例: フォルダ名が `Tokyo Skytree` なら、HTMLは `data-tour="Tokyo Skytree"` とします。
+*   **URLへの自動変換**:
+    *   ビルドプロセスにおいて、上記のリテラルな名前は、自動的にURLセーフな「Slug」に変換されます。
+    *   例: `Tokyo Skytree` → `tokyo-skytree`
+*   フロントエンド（スライダー）も実行時に同じルールでSlug化を行ってパスを解決するため、開発者は人間用の名前だけを意識すれば良くなっています。
 
 ### 3. 外科的同期デプロイ (Surgical Sync)
 *   GitHub Actions により、サーバー上の `/tours/` ディレクトリ内は常にリポジトリと同期されます。

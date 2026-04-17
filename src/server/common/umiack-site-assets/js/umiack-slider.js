@@ -55,6 +55,7 @@
 
     const rawTourId = WID.getAttribute('data-tour');
     const tourId = rawTourId ? slugify(rawTourId) : null;
+
     if (tourId) {
       try {
         const response = await fetch(`/common/umiack-site-assets/img/tours/${tourId}/images-manifest.json`);

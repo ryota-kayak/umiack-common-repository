@@ -144,13 +144,15 @@
       if (!img) return;
 
       const updateHeight = () => {
-        const sliderContainer = WID.querySelector('.umiack-slider');
-        if (sliderContainer) {
-          sliderContainer.style.height = `${img.offsetHeight}px`;
-        }
+        // requestAnimationFrame を使用して描画タイミングを最適化
+        requestAnimationFrame(() => {
+          const sliderContainer = WID.querySelector('.umiack-slider');
+          if (sliderContainer) {
+            sliderContainer.style.height = `${img.offsetHeight}px`;
+          }
+        });
       };
 
-      // if image is already loaded, update immediately
       if (img.complete) {
         updateHeight();
       } else {
@@ -179,9 +181,13 @@
     let isDragging = false;
     let sliderWidth = 0;
 
-    // Handle Resize
+    // Handle Resize (Debounced)
+    let resizeTimer;
     window.addEventListener('resize', () => {
-      adjustHeight();
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        adjustHeight();
+      }, 100);
     });
 
     track.addEventListener('touchstart', (e) => {

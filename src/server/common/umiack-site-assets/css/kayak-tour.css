@@ -585,8 +585,9 @@
 .umiack-slider {
   position: relative;
   overflow: hidden; /* スライドのはみ出しをここでクリップ */
-  transition: height 0.4s ease-in-out; /* 高さの変化を滑らかにする */
+  transition: height 0.45s cubic-bezier(0.4, 0, 0.2, 1); /* 高品質なイージング */
   will-change: height;
+  transform: translateZ(0); /* GPUアクセラレーションを有効化 */
 }
 
 /* ─── スライドトラック ─── */
@@ -609,6 +610,7 @@
   background: #111;
   /* aspect-ratio: 4 / 3;  <- 固定比率を解除 */
   overflow: hidden;
+  transform: translateZ(0); /* 各スライドにもGPUのヒントを与える */
 }
 
 .umiack-slide img {

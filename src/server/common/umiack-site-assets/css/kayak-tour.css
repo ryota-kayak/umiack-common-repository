@@ -24,6 +24,10 @@
   margin: 2em auto;
   aspect-ratio: 16 / 9;
   /* 横長の比率 */
+  border-radius: 12px;
+  overflow: hidden;
+  background: transparent !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 /* ② YouTube Shorts（スマホ縦長 9:16）を使う場合
@@ -37,6 +41,10 @@
   /* 画面の中央に配置 */
   aspect-ratio: 9 / 16;
   /* 縦長の比率 */
+  border-radius: 12px;
+  overflow: hidden;
+  background: transparent !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 /* ①②共通：動画自体の装飾設定 */
@@ -47,9 +55,6 @@
   height: 100%;
   /* 親コンテナの高さに完全にフィットさせる */
   border: 0;
-  border-radius: 12px;
-  /* 見栄え良く少し角を丸める */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 /* WordPressやテーマが自動挿入する独自の比率固定ラッパーを解除して綺麗に追従させる共通処理 */

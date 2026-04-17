@@ -43,8 +43,10 @@ jobs:
           sudo apt-get install -y sshpass
           
           # Perform the surgical sync of the tours folder only.
-          # --delete ensures that old folders like 'skytree' are removed from the server.
-          sshpass -e rsync -avz --delete \
-            -e "ssh -o StrictHostKeyChecking=no" \
+          # Use advanced SSH options to ensure success in a CI environment:
+          # -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null : Completely ignore host key prompts/errors
+          # -o ConnectTimeout=30 : Avoid hanging if server is busy
+          sshpass -e rsync -avzi --delete \
+            -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=30" \
             dist/server/common/umiack-site-assets/img/tours/ \
             ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }}:/home/umiack/www/common/umiack-site-assets/img/tours/

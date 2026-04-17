@@ -35,16 +35,16 @@ jobs:
           target: "/home/umiack/www/"
           strip_components: 2
 
-      - name: 🧼 Surgical Sync (Cleanup tours folder only)
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-        with:
-          server: ${{ secrets.SFTP_HOST }}
-          username: ${{ secrets.SFTP_USERNAME }}
-          password: ${{ secrets.SFTP_PASSWORD }}
-          protocol: sftp
-          port: 22
-          # Scope to the tours folder for safety
-          local-dir: dist/server/common/umiack-site-assets/img/tours/
-          server-dir: /home/umiack/www/common/umiack-site-assets/img/tours/
-          # MIRROR: Delete files/folders from server that are not in local-dir
-          delete-orphans: true
+      - name: 🧼 Surgical Sync (Industrial Strength Rsync)
+        env:
+          SSHPASS: ${{ secrets.SFTP_PASSWORD }}
+        run: |
+          # Install sshpass to handle password authentication with rsync
+          sudo apt-get install -y sshpass
+          
+          # Perform the surgical sync of the tours folder only.
+          # --delete ensures that old folders like 'skytree' are removed from the server.
+          sshpass -e rsync -avz --delete \
+            -e "ssh -o StrictHostKeyChecking=no" \
+            dist/server/common/umiack-site-assets/img/tours/ \
+            ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }}:/home/umiack/www/common/umiack-site-assets/img/tours/

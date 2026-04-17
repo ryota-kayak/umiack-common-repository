@@ -144,7 +144,7 @@
       if (!img) return;
 
       const updateHeight = () => {
-        // requestAnimationFrame を使用して描画タイミングを最適化
+        // 現在の画像の高さに合わせてコンテナを伸縮させる
         requestAnimationFrame(() => {
           const sliderContainer = WID.querySelector('.umiack-slider');
           if (sliderContainer) {

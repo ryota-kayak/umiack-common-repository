@@ -579,8 +579,7 @@
   background: #0d0d0d;
   user-select: none;
   -webkit-user-select: none;
-  /* box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);  <- 描画負荷軽減テストのため一時コメントアウト */
-  border: 1px solid #333; /* 代替の枠線 */
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
 }
 
 .umiack-slider {

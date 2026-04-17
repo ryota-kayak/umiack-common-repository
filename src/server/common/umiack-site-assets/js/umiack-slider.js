@@ -135,6 +135,29 @@
     }
 
     // --- 5. Navigation Control ---
+    function adjustHeight() {
+      const slides = track.querySelectorAll('.umiack-slide');
+      const activeSlide = slides[current];
+      if (!activeSlide) return;
+
+      const img = activeSlide.querySelector('img');
+      if (!img) return;
+
+      const updateHeight = () => {
+        const sliderContainer = WID.querySelector('.umiack-slider');
+        if (sliderContainer) {
+          sliderContainer.style.height = `${img.offsetHeight}px`;
+        }
+      };
+
+      // if image is already loaded, update immediately
+      if (img.complete) {
+        updateHeight();
+      } else {
+        img.onload = updateHeight;
+      }
+    }
+
     function goTo(idx) {
       if (total === 0) return;
       current = (idx + total) % total;
@@ -145,10 +168,21 @@
       dots.forEach((dot, j) => {
         dot.classList.toggle('active', j === current);
       });
+
+      // Adjust height to match the current slide's image
+      adjustHeight();
     }
 
     // --- 6. Touch Swiping (Main) ---
-    let startX = 0, startY = 0, diffX = 0, diffY = 0, isSwiping = false, startWidth = 0;
+    let startX = 0;
+    let currentX = 0;
+    let isDragging = false;
+    let sliderWidth = 0;
+
+    // Handle Resize
+    window.addEventListener('resize', () => {
+      adjustHeight();
+    });
 
     track.addEventListener('touchstart', (e) => {
       startX = e.touches[0].clientX;

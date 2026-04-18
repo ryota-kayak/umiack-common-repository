@@ -24,15 +24,17 @@ jobs:
       - name: 🧹 Build and Optimize
         run: ./scripts/build.sh
 
-      - name: 🚀 Emergency Restore Deployment (Safe Sync)
-        env:
-          SSHPASS: ${{ secrets.SFTP_PASSWORD }}
+      - name: 🚀 Secure Key-Based Deployment
         run: |
-          sudo apt-get install -y sshpass
+          # 1. 設置: GitHubシークレットから秘密鍵を導入
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
           
-          # SAFETY: Syncing ONLY the common directory specifically
-          # NO --delete on the parent directory to prevent wiping other sites.
-          sshpass -e rsync -avzi \
-            -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" \
+          # 2. 実行: 制限付きの鍵を使用して同期
+          # サーバー側の「門番(restrict_common.sh)」が働き、common以外への操作は物理的に拒否されます。
+          rsync -avzi \
+            -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa" \
             dist/server/common/ \
             ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }}:/home/umiack/www/common/
+

@@ -24,29 +24,20 @@ jobs:
       - name: 🧹 Build and Optimize
         run: ./scripts/build.sh
 
-      - name: 🚀 Deploy to Sakura Internet (SFTP)
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.SFTP_HOST }}
-          username: ${{ secrets.SFTP_USERNAME }}
-          password: ${{ secrets.SFTP_PASSWORD }}
-          port: 22
-          source: "dist/server/*"
-          target: "/home/umiack/www/"
-          strip_components: 2
-
-      - name: 🧼 Surgical Sync (Industrial Strength Rsync)
+      - name: 🚀 Unified Mirror Sync (Perfect Server State)
         env:
           SSHPASS: ${{ secrets.SFTP_PASSWORD }}
         run: |
-          # Install sshpass to handle password authentication with rsync
+          # Install sshpass to handle password authentication
           sudo apt-get install -y sshpass
           
-          # Perform the surgical sync of the tours folder only.
-          # Use advanced SSH options to ensure success in a CI environment:
-          # -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null : Completely ignore host key prompts/errors
-          # -o ConnectTimeout=30 : Avoid hanging if server is busy
+          # Perform the full mirror sync of the server assets.
+          # The --delete flag ensures stray files (like deleted CSS) are removed from the server.
+          # -a  : Archive mode (preserves permissions, timestamps, etc.)
+          # -v  : Verbose
+          # -z  : Compress data during transfer
+          # -i  : Itemize changes (shows exactly what's being updated/deleted)
           sshpass -e rsync -avzi --delete \
             -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=30" \
-            dist/server/common/umiack-site-assets/img/tours/ \
-            ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }}:/home/umiack/www/common/umiack-site-assets/img/tours/
+            dist/server/ \
+            ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }}:/home/umiack/www/

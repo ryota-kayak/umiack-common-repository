@@ -22,8 +22,8 @@ graph TD
     end
 
     subgraph "Deployment (GitHub Actions)"
-        E["GitHub Repository"] -->|Push to main| F["Industrial Strength Rsync"]
-        F -->|Surgical Sync --delete| G["Sakura Internet Server"]
+        E["GitHub Repository"] -->|Push to main| F["Secure SSH Key Deployment"]
+        F -->|Access Restricted to /common| G["Sakura Internet Server"]
     end
 
     subgraph "Browser Runtime"
@@ -52,9 +52,10 @@ graph TD
     *   例: `Tokyo Skytree` → `tokyo-skytree`
 *   フロントエンド（スライダー）も実行時に同じルールでSlug化を行ってパスを解決するため、開発者は人間用の名前だけを意識すれば良くなっています。
 
-### 3. 外科的同期デプロイ (Surgical Sync)
-*   GitHub Actions により、サーバー上の `/tours/` ディレクトリ内は常にリポジトリと同期されます。
-*   `rsync --delete` を特定のディレクトリ（tours）に限定して実行することで、**他のサイトや共有アセットを危険にさらすことなく**、古いフォルダのみを自動的にお掃除します。
+### 3. 外科的同期と物理的なアクセス制限 (Secure Surgical Sync)
+*   **権限の最小化**: GitHub Actions にはサイト全体のパスワードを渡さず、このリポジトリ専用の「SSH秘密鍵」のみを付与しています。
+*   **サーバー側による制限（門番）**: サーバー上の `~/.ssh/authorized_keys` に `command="/home/umiack/bin/restrict_common.sh"` を設定することで、**物理的に `common` ディレクトリ以外への操作を不可能**にしています。
+*   **安全な同期**: これにより、万が一プログラムのミスがあっても、他のサイトや重要ディレクトリ（wp-config.php等）が誤って削除されるリスクをインフラレベルで封じ込めています。
 
 ---
 
@@ -89,4 +90,4 @@ graph TD
 
 ## 依存関係
 *   **Image Processing**: `sharp` (Node.js v20+)
-*   **Deployment**: `sshpass`, `rsync`
+*   **Deployment**: `rsync`, SSH Public Key Authentication (with command restriction)

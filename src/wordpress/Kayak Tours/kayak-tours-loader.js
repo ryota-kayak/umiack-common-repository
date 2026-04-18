@@ -3,7 +3,7 @@
 (function () {
   var baseJs = '/common/umiack-site-assets/js/';
   var baseCss = '/common/umiack-site-assets/css/';
-  
+
   // 1. Load Styles (if not already present)
   if (!document.getElementById('kayak-tour-css')) {
     var l = document.createElement('link');
@@ -12,7 +12,6 @@
     l.href = baseCss + 'kayak-tour.css';
     document.head.appendChild(l);
   }
-
 
   // 2. Load Slider JS
   var files = [

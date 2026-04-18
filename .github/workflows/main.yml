@@ -24,20 +24,15 @@ jobs:
       - name: 🧹 Build and Optimize
         run: ./scripts/build.sh
 
-      - name: 🚀 Unified Mirror Sync (Perfect Server State)
+      - name: 🚀 Emergency Restore Deployment (Safe Sync)
         env:
           SSHPASS: ${{ secrets.SFTP_PASSWORD }}
         run: |
-          # Install sshpass to handle password authentication
           sudo apt-get install -y sshpass
           
-          # Perform the full mirror sync of the server assets.
-          # The --delete flag ensures stray files (like deleted CSS) are removed from the server.
-          # -a  : Archive mode (preserves permissions, timestamps, etc.)
-          # -v  : Verbose
-          # -z  : Compress data during transfer
-          # -i  : Itemize changes (shows exactly what's being updated/deleted)
-          sshpass -e rsync -avzi --delete \
-            -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=30" \
-            dist/server/ \
-            ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }}:/home/umiack/www/
+          # SAFETY: Syncing ONLY the common directory specifically
+          # NO --delete on the parent directory to prevent wiping other sites.
+          sshpass -e rsync -avzi \
+            -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" \
+            dist/server/common/ \
+            ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }}:/home/umiack/www/common/

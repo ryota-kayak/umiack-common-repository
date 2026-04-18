@@ -1,8 +1,8 @@
 // Umiack Kayak Tours Loader - Latest Version
 // Paste this into Cocoon's Custom JavaScript code field.
 (function () {
-  var baseJs = 'https://jp.umiack.com/common/umiack-site-assets/js/';
-  var baseCss = 'https://jp.umiack.com/common/umiack-site-assets/css/';
+  var baseJs = '/common/umiack-site-assets/js/';
+  var baseCss = '/common/umiack-site-assets/css/';
   
   // 1. Load Styles (if not already present)
   if (!document.getElementById('kayak-tour-css')) {
@@ -12,13 +12,7 @@
     l.href = baseCss + 'kayak-tour.css';
     document.head.appendChild(l);
   }
-  if (!document.getElementById('umiack-slider-css')) {
-    var sl = document.createElement('link');
-    sl.id = 'umiack-slider-css';
-    sl.rel = 'stylesheet';
-    sl.href = baseCss + 'umiack-slider.css';
-    document.head.appendChild(sl);
-  }
+
 
   // 2. Load Slider JS
   var files = [

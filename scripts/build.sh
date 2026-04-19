@@ -18,6 +18,18 @@ cp -R src/* dist/
 find dist -name ".DS_Store" -depth -exec rm {} \;
 find dist -name ".gitignore" -depth -exec rm {} \;
 
+echo "🏷  Injecting build version (Cache Busting)..."
+TIMESTAMP=$(date +%Y%m%d%H%M)
+TARGET_FILE="dist/wordpress/Kayak Tours/kayak-tours-loader.js"
+if [ -f "$TARGET_FILE" ]; then
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    sed -i '' "s/BUILD_VERSION/$TIMESTAMP/g" "$TARGET_FILE"
+  else
+    sed -i "s/BUILD_VERSION/$TIMESTAMP/g" "$TARGET_FILE"
+  fi
+  echo "  Version set to: $TIMESTAMP"
+fi
+
 echo "🎨 Optimizing CSS with Lightning CSS..."
 find dist -name "*.css" -type f | while IFS= read -r file; do
   echo "  Minifying: $file"

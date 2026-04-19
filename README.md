@@ -13,12 +13,14 @@ graph TD
     subgraph "Local Development (src)"
         A["Tour Folders<br/>(e.g., 01 Skytree Tour)"] -->|images.json| B["optimize-images.mjs"]
         P["Original Photos<br/>(EXIF Orientation)"] --> B
+        L["kayak-tours-loader.js<br/>(BUILD_VERSION)"] --> BU
     end
 
     subgraph "Build Pipeline (scripts)"
         B -->|Slugify| C["dist/server/.../tours/01-skytree-tour/"]
         B -->|Rotate/Resize| C
         C -->|Generated| D["images-manifest.json"]
+        BU["build.sh"] -->|Inject Timestamp| L2["dist/../loader.js"]
     end
 
     subgraph "Deployment (GitHub Actions)"
@@ -28,9 +30,10 @@ graph TD
 
     subgraph "Browser Runtime"
         H["WordPress Page<br/>(data-tour='01 Skytree Tour')"] -->|Slugify| I["umiack-slider.js"]
-        I -->|Fetch| G
+        I -->|Fetch Manifest| G
         G -->|Return Manifest| I
         I -->|Render| J["Responsive Slider View"]
+        K["Loader Script"] -->|Cache Busted URL| L2
     end
 ```
 
@@ -57,6 +60,10 @@ graph TD
 *   **サーバー側による制限（門番）**: サーバー上の `~/.ssh/authorized_keys` に `command="/home/umiack/bin/restrict_common.sh"` を設定することで、**物理的に `common` ディレクトリ以外への操作を不可能**にしています。
 *   **安全な同期**: これにより、万が一プログラムのミスがあっても、他のサイトや重要ディレクトリ（wp-config.php等）が誤って削除されるリスクをインフラレベルで封じ込めています。
 
+### 4. 自動キャッシュバスティング (Automated Cache Busting)
+*   **ブラウザキャッシュの強制更新**: `kayak-tours-loader.js` が読み込むCSSやJSのURLに、ビルド時のタイムスタンプを `?v=YYYYMMDDHHMM` 形式で自動付与します。
+*   **目的**: 手動でバージョン番号を管理する手間を排除しつつ、新着アセットを確実にエンドユーザーへ届けるためのプロフェッショナルな仕組みです。
+
 ---
 
 ## 🚀 自動化フロー (Automation Flow)
@@ -75,6 +82,7 @@ graph TD
     *   **Slug化**: フォルダ名をURLセーフ（小文字・ハイフン）に変換。
     *   **画像処理**: EXIF回転の自動補正、WebPへの変換、各種サイズへのリサイズ。
     *   **マニフェスト生成**: スライダー用の `images-manifest.json` を作成。
+    *   **キャッシュバスティング**: `kayak-tours-loader.js` 内の `BUILD_VERSION` プレースホルダーを現在の日時に置換。
 3.  **デプロイ**: 出来上がった成果物（`dist`）をさくらインターネットへ送信。
 4.  **外科的同期**: サーバー上の `tours/` ディレクトリ内をチェックし、リポジトリに存在しない古いフォルダを自動的に削除。
 

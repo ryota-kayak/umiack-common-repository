@@ -274,31 +274,37 @@
     });
 
     // --- 8. GLOBAL LIGHTBOX (Ukiyo-e etc.) ---
-    const lbLinks = document.querySelectorAll('.umiack-lightbox');
+    const lbElements = document.querySelectorAll('.umiack-lightbox');
     const galleries = {};
 
-    lbLinks.forEach(link => {
-      const gid = link.getAttribute('data-gallery') || 'default';
+    lbElements.forEach(el => {
+      const gid = el.getAttribute('data-gallery') || 'default';
       if (!galleries[gid]) galleries[gid] = [];
       
-      const img = link.querySelector('img');
+      const img = el.querySelector('img');
       const item = {
-        src: link.href,
-        alt: (img && img.alt) || '',
+        src: el.getAttribute('data-full-src') || el.href || (img && img.src) || '',
+        alt: (img && (img.alt || img.getAttribute('data-alt'))) || '',
         srcset: (img && img.getAttribute('srcset')) || null,
-        el: link
+        el: el
       };
       
       const idxInGallery = galleries[gid].length;
       galleries[gid].push(item);
 
-      link.addEventListener('click', (e) => {
+      el.addEventListener('click', (e) => {
         e.preventDefault();
+        e.stopPropagation();
         if (MID.parentNode !== document.body) document.body.appendChild(MID);
         MID.classList.add('open');
         document.body.style.overflow = 'hidden';
         updateModalUI(galleries[gid], idxInGallery);
       });
+
+      // Add visual feedback (cursor pointer) for non-link elements
+      if (el.tagName !== 'A') {
+        el.style.cursor = 'pointer';
+      }
     });
 
     // --- 9. Common Modal Controls ---

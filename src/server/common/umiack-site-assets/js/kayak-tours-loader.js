@@ -1,5 +1,5 @@
-// Umiack Kayak Tours Loader - Latest Version
-// Paste this into Cocoon's Custom JavaScript code field.
+// Umiack Kayak Tours Loader - Production Version
+// Centralized loader. Call this script from your WordPress page.
 (function () {
   var baseJs = '/common/umiack-site-assets/js/';
   var baseCss = '/common/umiack-site-assets/css/';

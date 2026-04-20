@@ -20,7 +20,7 @@ find dist -name ".gitignore" -depth -exec rm {} \;
 
 echo "🏷  Injecting build version (Cache Busting)..."
 TIMESTAMP=$(date +%Y%m%d%H%M)
-TARGET_FILE="dist/wordpress/Kayak Tours/kayak-tours-loader.js"
+TARGET_FILE="dist/server/common/umiack-site-assets/js/kayak-tours-loader.js"
 if [ -f "$TARGET_FILE" ]; then
   if [[ "$OSTYPE" == "darwin"* ]]; then
     sed -i '' "s/BUILD_VERSION/$TIMESTAMP/g" "$TARGET_FILE"

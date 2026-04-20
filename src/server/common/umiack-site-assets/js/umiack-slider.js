@@ -221,8 +221,9 @@
     });
 
     // --- 7. Modal Control ---
-    function updateModalUI() {
-      const data = images[modalCurrent];
+    function updateModalUI(targetImages, currentIndex) {
+      const totalCount = targetImages.length;
+      const data = targetImages[currentIndex];
       modalImg.src = data.src;
       modalImg.alt = data.alt;
       
@@ -233,35 +234,92 @@
         modalImg.removeAttribute('srcset');
         modalImg.removeAttribute('sizes');
       }
-      modalCount.textContent = `${modalCurrent + 1} / ${total}`;
+      modalCount.textContent = `${currentIndex + 1} / ${totalCount}`;
+
+      // Navigation UI
+      if (totalCount > 1) {
+        modalPrev.style.display = 'flex';
+        modalNext.style.display = 'flex';
+      } else {
+        modalPrev.style.display = 'none';
+        modalNext.style.display = 'none';
+      }
+
+      // Add swipe/key listeners temporarily bound to this group? 
+      // Actually, easier to use a global modal state.
+      window.modalGalleryState = {
+        images: targetImages,
+        current: currentIndex
+      };
     }
 
     function moveModal(idx) {
-      modalCurrent = (idx + total) % total;
+      if (!window.modalGalleryState) return;
+      const { images: targetImages } = window.modalGalleryState;
+      const totalCount = targetImages.length;
+      const nextIdx = (idx + totalCount) % totalCount;
+      
       modalImg.style.transition = '';
       modalImg.style.transform = '';
-      updateModalUI();
+      updateModalUI(targetImages, nextIdx);
     }
 
+    // Main slider expand click
     btnExp.addEventListener('click', () => {
-      modalCurrent = current;
-      updateModalUI();
+      if (images.length === 0) return;
       if (MID.parentNode !== document.body) document.body.appendChild(MID);
       MID.classList.add('open');
       document.body.style.overflow = 'hidden';
+      updateModalUI(images, current);
     });
 
+    // --- 8. GLOBAL LIGHTBOX (Ukiyo-e etc.) ---
+    const lbLinks = document.querySelectorAll('.umiack-lightbox');
+    const galleries = {};
+
+    lbLinks.forEach(link => {
+      const gid = link.getAttribute('data-gallery') || 'default';
+      if (!galleries[gid]) galleries[gid] = [];
+      
+      const img = link.querySelector('img');
+      const item = {
+        src: link.href,
+        alt: (img && img.alt) || '',
+        srcset: (img && img.getAttribute('srcset')) || null,
+        el: link
+      };
+      
+      const idxInGallery = galleries[gid].length;
+      galleries[gid].push(item);
+
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (MID.parentNode !== document.body) document.body.appendChild(MID);
+        MID.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        updateModalUI(galleries[gid], idxInGallery);
+      });
+    });
+
+    // --- 9. Common Modal Controls ---
     modalClose.addEventListener('click', () => {
       MID.classList.remove('open');
       document.body.style.overflow = '';
+      window.modalGalleryState = null;
     });
 
-    modalPrev.addEventListener('click', () => moveModal(modalCurrent - 1));
-    modalNext.addEventListener('click', () => moveModal(modalCurrent + 1));
+    modalPrev.addEventListener('click', () => {
+      if (window.modalGalleryState) moveModal(window.modalGalleryState.current - 1);
+    });
+    modalNext.addEventListener('click', () => {
+      if (window.modalGalleryState) moveModal(window.modalGalleryState.current + 1);
+    });
+
     MID.addEventListener('click', (e) => {
       if (e.target === MID) {
         MID.classList.remove('open');
         document.body.style.overflow = '';
+        window.modalGalleryState = null;
       }
     });
 
@@ -289,7 +347,8 @@
       if (!mIsSwiping) return;
       modalImg.style.transition = '';
       if (Math.abs(mDiffX) > 60) {
-        mDiffX < 0 ? moveModal(modalCurrent + 1) : moveModal(modalCurrent - 1);
+        const dir = mDiffX < 0 ? 1 : -1;
+        if (window.modalGalleryState) moveModal(window.modalGalleryState.current + dir);
       } else {
         modalImg.style.transform = 'translate3d(0, 0, 0)';
       }
@@ -299,11 +358,16 @@
     document.addEventListener('keydown', (e) => {
       const isModalOpen = MID.classList.contains('open');
       if (isModalOpen) {
-        if (e.key === 'ArrowLeft') moveModal(modalCurrent - 1);
-        if (e.key === 'ArrowRight') moveModal(modalCurrent + 1);
+        if (e.key === 'ArrowLeft') {
+          if (window.modalGalleryState) moveModal(window.modalGalleryState.current - 1);
+        }
+        if (e.key === 'ArrowRight') {
+          if (window.modalGalleryState) moveModal(window.modalGalleryState.current + 1);
+        }
         if (e.key === 'Escape') {
           MID.classList.remove('open');
           document.body.style.overflow = '';
+          window.modalGalleryState = null;
         }
       } else {
         if (e.key === 'ArrowLeft') goTo(current - 1);

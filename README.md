@@ -6,21 +6,21 @@
 
 ## 🛠 技術設計図 (System Architecture)
 
-このプロジェクトのデータフローと自動化の仕組みを以下に示します。
+このプロジェクトのデータフローとキャッシュ自動管理の仕組みを以下に示します。
 
 ```mermaid
 graph TD
     subgraph "Local Development (src)"
         A["Tour Folders<br/>(e.g., 01 Skytree Tour)"] -->|images.json| B["optimize-images.mjs"]
         P["Original Photos<br/>(EXIF Orientation)"] --> B
-        L["kayak-tours-loader.js<br/>(BUILD_VERSION)"] --> BU
+        L_SRC["kayak-tours-loader.js<br/>(Source)"] --> BU
     end
 
     subgraph "Build Pipeline (scripts)"
         B -->|Slugify| C["dist/server/.../tours/01-skytree-tour/"]
         B -->|Rotate/Resize| C
         C -->|Generated| D["images-manifest.json"]
-        BU["build.sh"] -->|Inject Timestamp| L2["dist/../loader.js"]
+        BU["build.sh"] -->|Inject Timestamp| L_DIST["dist/.../js/kayak-tours-loader.js"]
     end
 
     subgraph "Deployment (GitHub Actions)"
@@ -28,12 +28,20 @@ graph TD
         F -->|Access Restricted to /common| G["Sakura Internet Server"]
     end
 
+    subgraph "Server & Cache Control"
+        G --> H[".htaccess<br/>(Files '...-loader.js')"]
+        H -->|Header set| I["Cache-Control: no-cache"]
+    end
+
     subgraph "Browser Runtime"
-        H["WordPress Page<br/>(data-tour='01 Skytree Tour')"] -->|Slugify| I["umiack-slider.js"]
-        I -->|Fetch Manifest| G
-        G -->|Return Manifest| I
-        I -->|Render| J["Responsive Slider View"]
-        K["Loader Script"] -->|Cache Busted URL| L2
+        W["WordPress Page<br/>(data-tour='01 Skytree Tour')"] -->|Static Script Tag| L_URL["/common/.../js/kayak-tours-loader.js"]
+        L_URL -- "1. Fetch Loader<br/>(Always Fresh)" --> I
+        I -- "2. Execute Loader" --> SL
+        SL["Loader JS"] -->|3. Load CSS?v=TIMESTAMP| CSS["kayak-tour.css"]
+        SL -->|4. Load JS?v=TIMESTAMP| S_JS["umiack-slider.js"]
+        S_JS -->|5. Fetch Manifest| G
+        G -->|6. Return Manifest| S_JS
+        S_JS -->|7. Render| J["Responsive Slider View"]
     end
 ```
 
@@ -48,54 +56,65 @@ graph TD
 
 ### 2. 公開用パスの自動Slug化 (Automated Slugification)
 *   **フォルダ名とIDの完全一致**:
-    *   `src/wordpress/Kayak Tours/` 下の**フォルダ名**と、`tour_main.html` の **`data-tour` 属性の値**は、表記を完全に一致させてください（大文字小文字・スペース含む）。
+    *   `src/wordpress/Kayak Tours/` 下の**フォルダ名**と、HTMLの **`data-tour` 属性の値**は、表記を完全に一致させてください（大文字小文字・スペース含む）。
     *   例: フォルダ名が `Tokyo Skytree` なら、HTMLは `data-tour="Tokyo Skytree"` とします。
 *   **URLへの自動変換**:
-    *   ビルドプロセスにおいて、上記のリテラルな名前は、自動的にURLセーフな「Slug」に変換されます。
-    *   例: `Tokyo Skytree` → `tokyo-skytree`
-*   フロントエンド（スライダー）も実行時に同じルールでSlug化を行ってパスを解決するため、開発者は人間用の名前だけを意識すれば良くなっています。
+    *   ビルドプロセスにおいて、上記のリテラルな名前は、自動的にURLセーフな「Slug」に変換されます（例: `Tokyo Skytree` → `tokyo-skytree`）。
 
 ### 3. 外科的同期と物理的なアクセス制限 (Secure Surgical Sync)
-*   **権限の最小化**: GitHub Actions にはサイト全体のパスワードを渡さず、このリポジトリ専用の「SSH秘密鍵」のみを付与しています。
-*   **サーバー側による制限（門番）**: サーバー上の `~/.ssh/authorized_keys` に `command="/home/umiack/bin/restrict_common.sh"` を設定することで、**物理的に `common` ディレクトリ以外への操作を不可能**にしています。
-*   **安全な同期**: これにより、万が一プログラムのミスがあっても、他のサイトや重要ディレクトリ（wp-config.php等）が誤って削除されるリスクをインフラレベルで封じ込めています。
+*   **権限の最小化**: GitHub Actions にはサイト全体のパスワードではなく、専用の「SSH秘密鍵」のみを付与しています。
+*   **物理的制限**: サーバー上の `authorized_keys` で実行制限をかけることで、**`common` ディレクトリ以外への操作を不可能**にしています。
 
-### 4. 自動キャッシュバスティング (Automated Cache Busting)
-*   **ブラウザキャッシュの強制更新**: `kayak-tours-loader.js` が読み込むCSSやJSのURLに、ビルド時のタイムスタンプを `?v=YYYYMMDDHHMM` 形式で自動付与します。
-*   **目的**: 手動でバージョン番号を管理する手間を排除しつつ、新着アセットを確実にエンドユーザーへ届けるためのプロフェッショナルな仕組みです。
+### 4. CSS標準化設計規約 (CSS Standardization)
+ツアーページ全体のルック＆フィールを統一し、堅牢な表示を実現するための規約です。
+*   **垂直配置の統一 (.tour-container)**:
+    *   全ツアーページは `.tour-container` でラップします。
+    *   `display: flex; flex-direction: column; gap: 32px;` を設定し、垂直方向の余白を **32px** に完全に統一します。
+*   **マージン・リセット則**:
+    *   `section`, `.intro-paragraph`, `.tour-info-box` など、`.tour-container` の直下に来るすべての要素は、自らマージンを持たず、親の `gap` 設定に従います（`margin: 0;` または `margin: 0 auto;`）。
+*   **YouTube表示の堅牢化**:
+    *   動画の角丸（`border-radius`）や影（`box-shadow`）といった装飾は、コンテナ側ではなく **`iframe` 自体** に適用します。
+    *   これにより、WordPressやテーマが挿入する余計なラッパー要素の影響を受けず、常に安定したプロフェッショナルな外観を維持します。
+
+### 5. 自動キャッシュバスティング (Automated Cache Busting)
+「一度設定したら二度とWordPress側を触らない」ことをゴールとした、二段階のキャッシュ管理システムです。
+*   **ティア1：Loader（読み込み指示役）**:
+    *   `/js/kayak-tours-loader.js` は、サーバー側（`.htaccess`）で `Cache-Control: no-cache` を設定。
+    *   ブラウザは毎回必ずサーバーへ「内容の変更」を確認するため、常に最新の読み込み指示が実行されます。
+*   **ティア2：実資産（CSS/JS）**:
+    *   Loaderが読み込む `kayak-tour.css` や `umiack-slider.js` のURLに、ビルド時のタイムスタンプを自動付与（`?v=YYYYMMDDHHMM`）。
+    *   ビルドを行うだけで、エンドユーザーのキャッシュが確実にクリアされます。
 
 ---
 
 ## 🚀 自動化フロー (Automation Flow)
 
-このプロジェクトは「人間は素材を整えるだけ、重い作業はクラウドに任せる」という分担で自動化されています。
-
 ### 1. ローカル作業 (Your PC)
-*   `src/` 内に画像を追加し、`images.json` を整える。
-*   Git で `push` する。
-*   **ポイント**: あなたのPCで重い画像圧縮をする必要はありません（素材だけ送ればOKです）。
+*   `src/` 内を整理し、`git push` する。重い画像圧縮などは一切不要です。
 
 ### 2. クラウド処理 (GitHub Actions)
-`git push` をトリガーに、以下の作業がクラウド上で全自動実行されます。
-1.  **環境構築**: Node.js 実行環境をセットアップ。
-2.  **ビルド（重い作業）**: `scripts/build.sh` を実行し、以下の処理を一括で行う。
-    *   **Slug化**: フォルダ名をURLセーフ（小文字・ハイフン）に変換。
-    *   **画像処理**: EXIF回転の自動補正、WebPへの変換、各種サイズへのリサイズ。
-    *   **マニフェスト生成**: スライダー用の `images-manifest.json` を作成。
-    *   **キャッシュバスティング**: `kayak-tours-loader.js` 内の `BUILD_VERSION` プレースホルダーを現在の日時に置換。
-3.  **デプロイ**: 出来上がった成果物（`dist`）をさくらインターネットへ送信。
-4.  **外科的同期**: サーバー上の `tours/` ディレクトリ内をチェックし、リポジトリに存在しない古いフォルダを自動的に削除。
+1.  **ビルド**: `scripts/build.sh` を実行。
+    *   **画像最適化**: `sharp` を用いた WebP 変換とマルチサイズ展開。
+    *   **資産圧縮**: `lightningcss`, `esbuild` による CSS/JS の軽量化。
+    *   **バージョン注入**: `kayak-tours-loader.js` 内の `BUILD_VERSION` を現在時刻に一括置換。
+2.  **デプロイ**: 成果物（`dist`）をさくらインターネットへ送信。
+3.  **外科的同期**: サーバー上の古いファイルを自動検知して削除。
 
 ### 3. フロントエンド実行 (Browser)
-*   HTMLの `data-tour` 属性を読み取る。
-*   自動Slug化ロジックを用いて、サーバー上の正しいパスを特定。
-*   画像を読み込み、レスポンシブスライダーをレンダリング。
+*   WordPress側が読み込んだ `kayak-tours-loader.js` が、その瞬間の最新のCSS/JSを芋づる式にロード。
+*   `data-tour` 属性を基に適切な画像を特定し、レスポンシブスライダーをレンダリング。
 
 ---
 
-## 開発ガイド (Development Guide)
-...
+## 🛠 運用・管理 (Management)
 
-## 依存関係
-*   **Image Processing**: `sharp` (Node.js v20+)
-*   **Deployment**: `rsync`, SSH Public Key Authentication (with command restriction)
+### WordPress への初期設定
+各ツアーページの「カスタムJavaScript」欄には、以下の **1行だけ** を設定してください。一度記述すれば、二度と変更する必要はありません。
+
+```javascript
+(function(d){var s=d.createElement('script');s.src='/common/umiack-site-assets/js/kayak-tours-loader.js';s.defer=true;d.head.appendChild(s);})(document);
+```
+
+### 開発環境
+*   **依存関係**: Node.js v20+, `sharp`, `lightningcss`, `esbuild`, `html-minifier-terser`
+*   **ビルドコマンド**: `./scripts/build.sh`

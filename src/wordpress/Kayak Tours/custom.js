@@ -1,1 +1,1 @@
-<script src="/common/umiack-site-assets/js/kayak-tours-loader.js" defer></script>
+(function (d) { var s = d.createElement('script'); s.src = '/common/umiack-site-assets/js/kayak-tours-loader.js'; s.defer = true; d.head.appendChild(s); })(document);

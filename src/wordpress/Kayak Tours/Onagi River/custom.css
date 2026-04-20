@@ -1,0 +1,178 @@
+/* 浮世絵セクション専用カスタムCSS（決定版） */
+.wp-block-image {
+  margin-top: 27px !important;
+  margin-bottom: 0px !important;
+}
+
+.ukiyo-container {
+  background-color: #fdfbf7;
+  padding: 24px;
+  margin-top: 0px;
+  margin-bottom: 27px;
+  border-radius: 12px;
+  border: 1px solid #e8e2d0;
+  box-shadow: inset 0 0 40px rgba(232, 226, 208, 0.1);
+}
+
+.ukiyo-intro {
+  margin-bottom: 32px !important;
+  font-size: 0.95em;
+  color: #555;
+  line-height: 1.8;
+  border-left: 3px solid #00acc1;
+  padding-left: 15px;
+}
+
+.ukiyo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* グリッドを用いた強固な横長レイアウト */
+.ukiyo-card {
+  display: grid !important;
+  grid-template-columns: 320px 1fr !important;
+  /* 左：画像エリア320px、右：文章エリア */
+  background: #ffffff !important;
+  border: 1px solid #eee !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+  margin-bottom: 0 !important;
+}
+
+.ukiyo-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  border-color: #00acc1 !important;
+}
+
+/* 画像エリア */
+.ukiyo-card-media,
+.ukiyo-card-media-stack {
+  background: #f5f5f5 !important;
+  border-right: 1px solid #eee !important;
+  width: 320px !important;
+  min-width: 320px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer;
+}
+
+.ukiyo-card-media img,
+.ukiyo-img-item img {
+  width: 100% !important;
+  height: auto !important;
+  max-height: 400px;
+  object-fit: contain !important;
+  padding: 10px !important;
+  margin: 0 !important;
+}
+
+/* 萬年橋：画像スタック */
+.ukiyo-card-media-stack {
+  flex-direction: column !important;
+}
+
+.ukiyo-img-item {
+  position: relative;
+  width: 100%;
+  border-bottom: 1px solid #fff;
+  cursor: pointer;
+}
+
+.ukiyo-img-label {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0, 96, 100, 0.85);
+  color: #fff;
+  padding: 2px 10px;
+  font-size: 0.75em;
+  border-radius: 4px;
+  z-index: 2;
+}
+
+/* 文字・コンテンツエリア */
+.ukiyo-card-content {
+  padding: 24px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+}
+
+.ukiyo-card-title {
+  font-size: 1.1rem !important;
+  font-weight: bold !important;
+  margin-bottom: 12px !important;
+  color: #1a1a1a !important;
+  text-align: left !important;
+}
+
+.ukiyo-card-description {
+  font-size: 0.95em !important;
+  line-height: 1.8 !important;
+  margin-bottom: 20px !important;
+  text-align: left !important;
+  color: #444 !important;
+}
+
+/* Google Maps ボタン */
+.ukiyo-map-btn {
+  align-self: flex-start !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  background: linear-gradient(135deg, #00acc1 0%, #00838f 100%) !important;
+  color: #fff !important;
+  padding: 10px 20px !important;
+  border-radius: 30px !important;
+  font-size: 0.88em !important;
+  font-weight: bold !important;
+  text-decoration: none !important;
+  box-shadow: 0 4px 10px rgba(0, 172, 193, 0.2) !important;
+}
+
+.ukiyo-map-btn::before {
+  content: "" !important;
+  width: 14px !important;
+  height: 14px !important;
+  background-color: currentColor !important;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z'%3E%3C/path%3E%3Ccircle cx='12' cy='10' r='3'%3E%3C/circle%3E%3C/svg%3E") !important;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z'%3E%3C/path%3E%3Ccircle cx='12' cy='10' r='3'%3E%3C/circle%3E%3C/svg%3E") !important;
+  -webkit-mask-repeat: no-repeat !important;
+  -webkit-mask-size: contain !important;
+}
+
+/* 最後のまとめ文章（左背景・標準フォントサイズ） */
+.ukiyo-outro {
+  display: block !important;
+  width: 100% !important;
+  text-align: left !important;
+  margin-top: 48px !important;
+  font-size: 18px !important;
+  /* 他の説明文と同じサイズ */
+  font-weight: 400 !important;
+  /* 太字解除 */
+  color: #333 !important;
+  border-top: 2px solid #e8e2d0 !important;
+  padding-top: 32px !important;
+  line-height: 1.8 !important;
+}
+
+/* スマホ表示対応：600px以下のみ縦並びに切り替え */
+@media (max-width: 600px) {
+  .ukiyo-card {
+    grid-template-columns: 1fr !important;
+  }
+
+  .ukiyo-card-media,
+  .ukiyo-card-media-stack {
+    width: 100% !important;
+    min-width: 100% !important;
+    border-right: none !important;
+    border-bottom: 1px solid #eee !important;
+  }
+}

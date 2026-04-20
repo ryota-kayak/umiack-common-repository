@@ -8,6 +8,16 @@
   letter-spacing: 0.02em;
 }
 
+.tour-container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+section {
+  margin: 0;
+}
+
 /* =========================================
    YouTube 動画埋め込み用スタイル（雛形用）
    -----------------------------------------
@@ -21,13 +31,9 @@
 */
 .youtube-wide {
   width: 100%;
-  margin: 2em auto;
+  margin: 0 auto;
   aspect-ratio: 16 / 9;
   /* 横長の比率 */
-  border-radius: 12px;
-  overflow: hidden;
-  background: transparent !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 /* ② YouTube Shorts（スマホ縦長 9:16）を使う場合
@@ -37,14 +43,10 @@
   width: 100%;
   max-width: 360px;
   /* PCなどで画面を埋め尽くさない適切な最大幅 */
-  margin: 2em auto;
+  margin: 0 auto;
   /* 画面の中央に配置 */
   aspect-ratio: 9 / 16;
   /* 縦長の比率 */
-  border-radius: 12px;
-  overflow: hidden;
-  background: transparent !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 /* ①②共通：動画自体の装飾設定 */
@@ -55,6 +57,9 @@
   height: 100%;
   /* 親コンテナの高さに完全にフィットさせる */
   border: 0;
+  border-radius: 12px;
+  /* 見栄え良く少し角を丸める */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 /* WordPressやテーマが自動挿入する独自の比率固定ラッパーを解除して綺麗に追従させる共通処理 */
@@ -62,9 +67,11 @@
 .youtube-wide .video-container .video,
 .youtube-shorts .video-container,
 .youtube-shorts .video-container .video {
+  padding-top: 0 !important;
   padding-bottom: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
   height: 100% !important;
-  margin: 0 !important;
 }
 
 /* 汎用セクション見出し */
@@ -86,7 +93,7 @@
   line-height: 1.8;
   color: #333;
   padding: 1.5em 1.8em;
-  margin: 2em 0;
+  margin: 0 !important;
   background-color: #f7fbfc;
   /* 極めて淡い水色 */
   border-left: 2px solid #00acc1;
@@ -116,7 +123,8 @@
   /* 枠線も少し濃くして境界をくっきりと */
   border-radius: 8px;
   padding: 24px;
-  margin-top: 10px;
+  margin-top: 0;
+  margin-bottom: 0;
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
   /* 影も少しだけ強めて、カードとして確実に浮き立たせる */
 }
@@ -192,7 +200,7 @@
   list-style: none;
   /* デフォルトの黒丸を消す */
   padding-left: 0;
-  margin: 1.5em 0;
+  margin: 0;
 }
 
 .top-summary-list li {
@@ -328,7 +336,8 @@
   counter-reset: highlight-counter;
   /* カウンターをリセット */
   padding-left: 0;
-  margin-bottom: 2em;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .highlights-list>li {
@@ -366,7 +375,8 @@
 
 /* よくある質問 (dl.faq-list) */
 .faq-list {
-  margin-bottom: 2em;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .faq-item {

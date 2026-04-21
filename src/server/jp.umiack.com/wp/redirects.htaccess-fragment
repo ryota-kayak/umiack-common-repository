@@ -1,0 +1,30 @@
+# Umiack JP: Short Permalink Redirects
+# ============================================================
+# このコードを、サーバー上の jp.umiack.com/wp/.htaccess の 
+# 「# BEGIN WordPress」よりも上の位置に貼り付けてください。
+# ============================================================
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # --- 全ツアーURLの資産化（301永久転送） ---
+    
+    # 高尾山 (Mount Takao & Extreme Coffee)
+    RewriteRule ^2024/06/mount-takao/?$ https://jp.umiack.com/cafe-takao/ [R=301,L,NC]
+    RewriteRule ^2023/06/extreme-coffee/?$ https://jp.umiack.com/cafe-takao/ [R=301,L,NC]
+    
+    # 大菩薩嶺 (Geisha Coffee Mountain Guide)
+    RewriteRule ^2024/05/geisha-coffee-mountain-guide/?$ https://jp.umiack.com/cafe-daibosatsu/ [R=301,L,NC]
+    
+    # 日本橋 (Nihonbashi)
+    RewriteRule ^2024/05/tokyo-kayak-nihonbashi-circuit-course/?$ https://jp.umiack.com/nihonbashi/ [R=301,L,NC]
+    
+    # 小名木川 (Onagi River)
+    RewriteRule ^2024/05/tokyo-kayak-onagi-river/?$ https://jp.umiack.com/onagi/ [R=301,L,NC]
+    
+    # スカイツリー (Skytree)
+    RewriteRule ^2024/05/tokyo-kayak-skytree/?$ https://jp.umiack.com/skytree/ [R=301,L,NC]
+    
+    # お花見 (Ohanami / Kayak Tour Feb)
+    RewriteRule ^2024/02/kayak_tour/?$ https://jp.umiack.com/ohanami/ [R=301,L,NC]
+</IfModule>

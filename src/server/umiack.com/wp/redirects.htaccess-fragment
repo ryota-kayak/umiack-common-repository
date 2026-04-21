@@ -1,0 +1,23 @@
+# Umiack Global: Short Permalink Redirects
+# ============================================================
+# このコードを、サーバー上の umiack.com/wp/.htaccess の 
+# 「# BEGIN WordPress」よりも上の位置に貼り付けてください。
+# ============================================================
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # --- 全ツアーURLの資産化（301永久転送） ---
+    
+    # Skytree Tour
+    RewriteRule ^2024/12/skytree-kayak-course/?$ https://umiack.com/skytree/ [R=301,L,NC]
+    
+    # Onagi River (Mini Panama Canals)
+    RewriteRule ^2024/12/mini-panama-canals-course/?$ https://umiack.com/onagi/ [R=301,L,NC]
+    
+    # Nihonbashi Course
+    RewriteRule ^2024/12/nihonbashi-course/?$ https://umiack.com/nihonbashi/ [R=301,L,NC]
+    
+    # Ohanami (Kayak Tour Feb)
+    RewriteRule ^2024/02/kayak_tour/?$ https://umiack.com/ohanami/ [R=301,L,NC]
+</IfModule>

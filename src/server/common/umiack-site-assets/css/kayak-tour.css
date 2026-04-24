@@ -11,7 +11,7 @@
 .tour-container {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 2rem; /* 32px / 16 = 2rem */
 }
 
 section {
@@ -336,7 +336,7 @@ section {
 .highlights-list {
   display: flex;
   flex-direction: column;
-  gap: 1.8em; /* li間の隙間をgapで制御 */
+  gap: 1.8rem; /* 1.8emをremへ変換し、ルート基準で統一 */
   list-style: none;
   /* デフォルトの数字を消す */
   counter-reset: highlight-counter;

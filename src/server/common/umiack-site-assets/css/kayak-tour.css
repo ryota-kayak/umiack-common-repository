@@ -71,7 +71,10 @@ section {
   padding-bottom: 0 !important;
   margin-top: 0 !important;
   margin-bottom: 0 !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
   height: 100% !important;
+  width: 100% !important;
 }
 
 /* 汎用セクション見出し */

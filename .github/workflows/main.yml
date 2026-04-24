@@ -33,7 +33,8 @@ jobs:
           
           # 2. 実行: 制限付きの鍵を使用して同期
           # サーバー側の「門番(restrict_common.sh)」が働き、common以外への操作は物理的に拒否されます。
-          rsync -avzi \
+          # --delete を追加し、/common/ ディレクトリ内においてのみ、不要になった古いファイルを自動削除します。
+          rsync -avzi --delete \
             -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa" \
             dist/server/common/ \
             ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }}:/home/umiack/www/common/

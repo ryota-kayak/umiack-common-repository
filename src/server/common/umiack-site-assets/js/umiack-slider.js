@@ -256,8 +256,14 @@
       state.total = state.images.length;
       if (state.total === 0) return;
 
+      if (state.total <= 1) {
+        if (btnPrev) btnPrev.style.display = 'none';
+        if (btnNext) btnNext.style.display = 'none';
+        if (dotsWrap) dotsWrap.style.display = 'none';
+      }
+
       // Generate Dots
-      if (dotsWrap) {
+      if (dotsWrap && state.total > 1) {
         dotsWrap.innerHTML = '';
         state.images.forEach((_, idx) => {
           const dot = document.createElement('button');

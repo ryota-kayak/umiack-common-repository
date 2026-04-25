@@ -1,0 +1,240 @@
+<!--
+UMIACK Coffee Top Page
+-->
+
+<!--
+Background images
+-->
+<video id="background_video" muted loop playsinline></video>
+<div id="background_video_overlay"></div>
+<div id="background_image_1"></div>
+<div id="background_image_2"></div>
+<div id="background_image_3"></div>
+<div id="background_image_4"></div>
+<div id="scrolling_animation" class="waterdrop">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480">
+      <defs>
+        <linearGradient id="limelight_scrolling" x1="152" y1="144" x2="320" y2="96" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#fff2cc" stop-opacity="0.6" />
+          <stop offset="70%" stop-color="#ffd699" stop-opacity="0.4" />
+          <stop offset="100%" stop-color="#ffcc66" stop-opacity="0.25" />
+        </linearGradient>
+        <filter id="blurLimeLight_scrolling" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="10"/>
+        </filter>
+      </defs>
+      <!-- Rim light -->
+      <path
+        id="rimLight_scrolling"
+        d="m 146.94382,134.44944 a 192,192 0 0 1 168,-48"
+        stroke="url(#limelight_scrolling)"
+        stroke-width="10.8"
+        stroke-opacity="0.7"
+        fill="none"
+        stroke-linecap="round"
+        filter="url(#blurLimeLight_scrolling)"
+      />
+      <!-- Spot light -->
+      <ellipse
+        id="spotLight_scrolling"
+        cx="280" cy="152"
+        rx="16" ry="8"
+        fill="white"
+        opacity="0.9"
+        transform="rotate(-10 280 152)"
+      />
+      <!-- Brand colored water drop -->
+      <ellipse
+        id="brandColor_scrolling"
+        cx="240" cy="240"
+        rx="240" ry="240"
+        fill="#ff2800"
+        opacity="1"
+      />
+    </svg>
+</div>
+
+<!--
+Article container
+-->
+<div class="main_article">
+
+<!--
+Logo
+-->
+<div id="parallax_container">
+    <div id="logo_container">
+        <img srcset="/wp-content/uploads/logo/umiackcoffee_logo.webp 1x,
+                     /wp-content/uploads/logo/umiackcoffee_logo@2x.webp 2x"
+             src="/wp-content/uploads/logo/umiackcoffee_logo.webp"
+             alt="umiack Coffee Logo" id="img_1" />
+        <img srcset="/wp-content/uploads/2023/06/umiackcoffee_logo_bean_3.webp 1x,
+                     /wp-content/uploads/2023/06/umiackcoffee_logo_bean_3@2x.webp 2x"
+             src="/wp-content/uploads/2023/06/umiackcoffee_logo_bean_3.webp"
+             alt="umiack Coffee Logo" id="img_2" />
+    </div>
+</div>
+<h1 class="sr-only">UMIACK coffee</h1>
+
+<!--
+Links
+-->
+<div class="spacer2"></div>
+
+<div
+  class="links" id="kayak-guide"
+  onclick="window.location.href='https://jp.umiack.com/tokyo-kayak-gude/';"
+>
+    <h2>カヤック個人ガイド</h2>
+    <p class="lead">水のみやこ東京・江戸の再発見</p>
+    <a
+        class="btn"
+        href="https://jp.umiack.com/tokyo-kayak-gude/"
+        onclick="event.stopPropagation();"
+    >
+        さらに詳しく
+    </a>
+</div>
+
+<div class="spacer2"></div>
+
+<div
+  class="links" id="coffee-sales"
+  onclick="window.location.href='https://jp.shop.umiack.com/ec-cube/products/list?category_id=7';"
+>
+    <h2>自家焙煎コーヒー豆</h2>
+    <p class="lead">通販しています</p>
+    <a
+        class="btn"
+        href="https://jp.shop.umiack.com/ec-cube/products/list?category_id=7"
+        onclick="event.stopPropagation();"
+    >
+        さらに詳しく
+    </a>
+</div>
+
+<div class="spacer2"></div>
+
+<div
+  class="links" id="mountain-coffee-roast"
+  onclick="window.location.href='https://umiackcoffee.com/umiack-cafe/';"
+>
+    <h2>山頂焙煎珈琲</h2>
+    <p class="lead">標高3,000mでの珈琲焙煎と絶景カフェ</p>
+    <a
+        class="btn"
+        href="https://umiackcoffee.com/umiack-cafe/"
+        onclick="event.stopPropagation();"
+    >
+        さらに詳しく
+    </a>
+</div>
+
+<div class="spacer2"></div>
+
+<div
+  class="links" id="train"
+  onclick="window.location.href='https://www.amazon.co.jp/日本の電車1-JR新幹線・JR特急編-Leo-Yamada/dp/B07NR8PDJ7';"
+>
+    <h2>日本の電車　キッズ動画</h2>
+    <p class="lead">新幹線や特急の発着シーンを動画で紹介</p>
+    <a
+        class="btn"
+        href="https://www.amazon.co.jp/日本の電車1-JR新幹線・JR特急編-Leo-Yamada/dp/B07NR8PDJ7"
+        onclick="event.stopPropagation();"
+    >
+        さらに詳しく
+    </a>    
+</div>
+
+<!--
+Spacer
+-->
+<div class="spacer"></div>
+
+<!--
+Social links
+-->
+<ul class="my-social-links">
+  <li>
+    <a href="https://www.youtube.com/@ryotayamada" target="_blank" rel="noopener" class="my-social-btn youtube" aria-label="YouTube">
+      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M21.8,8.001c0,0-0.195-1.378-0.795-1.985c-0.76-0.797-1.613-0.801-2.004-0.847
+        c-2.799-0.202-6.997-0.202-6.997-0.202h-0.009c0,0-4.198,0-6.997,0.202C4.608,5.216,3.756,5.22,2.995,6.016
+        C2.395,6.623,2.2,8.001,2.2,8.001S2,9.62,2,11.238v1.517c0,1.618,0.2,3.237,0.2,3.237s0.195,1.378,0.795,1.985
+        c0.761,0.797,1.76,0.771,2.205,0.855c1.6,0.153,6.8,0.201,6.8,0.201s4.203-0.006,7.001-0.209c0.391-0.047,1.243-0.051,
+        2.004-0.847c0.6-0.607,0.795-1.985,0.795-1.985s0.2-1.618,0.2-3.237v-1.517C22,9.62,21.8,8.001,21.8,8.001z M9.935,
+        14.594l-0.001-5.62l5.404,2.82L9.935,14.594z" fill="#fff"/>
+      </svg>
+    </a>
+  </li>
+  <li>
+    <a href="https://x.com/RyotaYamada_" target="_blank" rel="noopener" class="my-social-btn x" aria-label="X">
+      <svg width="32" height="32" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M13.982 10.622 20.54 3h-1.554l-5.693 6.618L8.745 3H3.5l6.876 10.007L3.5 21h1.554l6.012-6.989L15.868 21h5.245
+        l-7.131-10.378Zm-2.128 2.474-.697-.997-5.543-7.93H8l4.474 6.4.697.996 5.815 8.318h-2.387l-4.745-6.787Z" fill="#fff"/>
+      </svg>
+    </a>
+  </li>
+  <li>
+    <a href="https://www.instagram.com/ryotayamada_/" target="_blank" rel="noopener" class="my-social-btn instagram" aria-label="Instagram">
+      <svg width="32" height="32" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M12,7.378c-2.552,0-4.622,2.069-4.622,4.622S9.448,16.622,12,16.622s4.622-2.069,4.622-4.622S14.552,
+        7.378,12,7.378z M12,15c-1.657,0-3-1.343-3-3s1.343-3,3-3s3,1.343,3,3S13.657,15,12,15z M16.804,6.116
+        c-0.596,0-1.08,0.484-1.08,1.08s0.484,1.08,1.08,1.08c0.596,0,1.08-0.484,1.08-1.08S17.401,6.116,16.804,6.116z
+        M12,4.622c2.403,0,2.688,0.009,3.637,0.052c0.877,0.04,1.354,0.187,1.671,0.31c0.42,0.163,0.72,0.358,1.035,
+        0.673c0.315,0.315,0.51,0.615,0.673,1.035c0.123,0.317,0.27,0.794,0.31,1.671c0.043,0.949,0.052,1.234,0.052,
+        3.637s-0.009,2.688-0.052,3.637c-0.04,0.877-0.187,1.354-0.31,1.671c-0.163,0.42-0.358,0.72-0.673,
+        1.035c-0.315,0.315-0.615,0.51-1.035,0.673c-0.317,0.123-0.794,0.27-1.671,0.31c-0.949,0.043-1.233,0.052-3.637,
+        0.052s-2.688-0.009-3.637-0.052c-0.877-0.04-1.354-0.187-1.671-0.31c-0.42-0.163-0.72-0.358-1.035-0.673
+        c-0.315-0.315-0.51-0.615-0.673-1.035c-0.123-0.317-0.27-0.794-0.31-1.671C4.631,14.688,4.622,14.403,4.622,
+        12s0.009-2.688,0.052-3.637c0.04-0.877,0.187-1.354,0.31-1.671c0.163-0.42,0.358-0.72,0.673-1.035
+        c0.315-0.315,0.615-0.51,1.035-0.673c0.317-0.123,0.794-0.27,1.671-0.31C9.312,4.631,9.597,4.622,12,4.622z" fill="#fff"/>
+      </svg>
+    </a>
+  </li>
+  <li>
+    <a href="https://blog.ryotayamada.com" target="_blank" rel="noopener" class="my-social-btn blog" aria-label="Blog">
+      <svg width="32" height="32" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M3 17.25V21h3.75l11.06-11.06-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="#222"/>
+      </svg>
+    </a>
+  </li>
+</ul>
+
+<!--
+Life Is Adventure
+-->
+<div id="life_is"><span id="life_is_a">Life</span><span id="life_is_b">is</span><span>Adventure</span></div>
+
+<!--
+End of article container
+-->
+</div>
+
+<!--
+Spacer
+-->
+<div class="spacer"></div> 
+
+<!--
+Wave image
+-->
+<svg class="wave wave_lower" viewBox="0 0 1557 133" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+  <path class="svg-wave-path"
+    fill="#ffffff"
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    d="M0 35.4652L64.875 46.3024C129.75 57.1396 259.5 78.814 389.25 89.6512C519 100.488 648.75 100.488 778.5 78.814C908.25 57.1396 1038 13.7908 1167.75 2.9536C1297.5 -7.8836 1427.25 13.7908 1492.12 24.628L1557 35.4652V133H1492.12C1427.25 133 1297.5 133 1167.75 133C1038 133 908.25 133 778.5 133C648.75 133 519 133 389.25 133C259.5 133 129.75 133 64.875 133H0V35.4652Z"
+  />
+</svg>
+
+<!--
+最後という位置の標識
+-->
+<div id="last_block"></div>
+
+<!--
+Dummy space for scrolling
+-->
+<div id="dummy_space_for_scroll"></div>

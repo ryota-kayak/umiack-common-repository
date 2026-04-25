@@ -92,10 +92,10 @@ section {
 
 /* 導入文（イントロ）の装飾 */
 .intro-paragraph {
-  font-size: 1.05em;
+  font-size: 1.05rem;
   line-height: 1.8;
   color: #333;
-  padding: 1.5em 1.8em;
+  padding: 1.5rem 1.8rem;
   margin: 0 !important;
   background-color: #f7fbfc;
   /* 極めて淡い水色 */
@@ -111,8 +111,8 @@ section {
   top: 50%;
   left: -15px;
   transform: translateY(-50%);
-  width: 8px;
-  height: 12px;
+  width: 0.5em;
+  height: 0.75em;
   background-color: #26c6da;
   /* アクセントカラー（水の色） */
   border-radius: 50% 0 50% 0;
@@ -125,7 +125,7 @@ section {
   border: 1px solid #d1d5db;
   /* 枠線も少し濃くして境界をくっきりと */
   border-radius: 8px;
-  padding: 24px;
+  padding: 1.5rem;
   margin-top: 0;
   margin-bottom: 0;
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
@@ -134,8 +134,8 @@ section {
 
 /* ボックス内の段落間の余白を整える */
 .tour-info-box p {
-  margin-bottom: 1.5em;
-  font-size: 0.95em;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
   /* 本文よりわずかに小さく */
 }
 
@@ -144,7 +144,7 @@ section {
 .btn-line,
 .btn-phone {
   display: inline-block;
-  padding: 12px 24px;
+  padding: 0.75rem 1.5rem;
   margin: 5px;
   border-radius: 30px;
   /* 丸みを持たせて親しみやすく */
@@ -240,8 +240,8 @@ section {
 .application-flex-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
-  margin-top: 16px;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
 .app-item {
@@ -249,7 +249,7 @@ section {
   background: #ffffff;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
-  padding: 16px;
+  padding: 1rem;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -266,18 +266,18 @@ section {
   /* 上下に並べる */
   align-items: center;
   justify-content: center;
-  padding: 10px 24px !important;
+  padding: 0.625rem 1.5rem !important;
   /* 上下のパディングを調整 */
 }
 
 .btn-main-text {
-  font-size: 0.95em;
+  font-size: 0.95rem;
   display: flex;
   align-items: center;
 }
 
 .btn-sub-text {
-  font-size: 0.85em;
+  font-size: 0.85rem;
   opacity: 0.9;
   margin-top: 2px;
   font-family: monospace;
@@ -386,9 +386,9 @@ section {
 }
 
 .faq-item {
-  margin-bottom: 1.5em;
+  margin-bottom: 1.5rem;
   background-color: #fafafa;
-  padding: 1.2em 1.5em;
+  padding: 1.2rem 1.5rem;
   border-left: 4px solid #26c6da;
   border-radius: 0 6px 6px 0;
   /* 縦並びを強制する設定 */
@@ -403,8 +403,8 @@ section {
   float: none !important;
   font-weight: bold;
   color: #006064;
-  margin-bottom: 0.5em;
-  font-size: 1.05em;
+  margin-bottom: 0.5rem;
+  font-size: 1.05rem;
 }
 
 .faq-list dd.faq-answer {
@@ -442,8 +442,8 @@ section {
   border-radius: 20px;
   /* 少し丸みを持たせて親しみやすく */
   font-weight: 700;
-  font-size: 0.9em;
-  margin-bottom: 0.8em;
+  font-size: 0.9rem;
+  margin-bottom: 0.8rem;
 }
 
 .tour-detail-list dd {
@@ -491,7 +491,7 @@ section {
   color: #00838f;
   margin-right: 0.8em;
   font-family: monospace;
-  font-size: 1.1em;
+  font-size: 1.1rem;
 }
 
 .schedule-timeline span {
@@ -522,10 +522,10 @@ section {
 .highlights-list {
   /* Cocoonのデフォルト余白(26px)を打ち消す */
   padding-left: 0 !important;
-  margin-bottom: 27px !important;
+  margin-bottom: 1.7rem !important;
 }
 
-@media screen and (max-width:781px) {
+@media screen and (max-width: 48.8125em) { /* 781px / 16px = 48.8125em */
   #main {
     width: calc(95vw);
     margin-left: auto;
@@ -549,7 +549,7 @@ section {
     /* 横の線を復活 */
     border-right: 1px solid #e0e0e0;
     /* 横の線を復活 */
-    padding: 24px 16px;
+    padding: 1.5rem 1rem;
     /* 内部の文字余白を調整 */
   }
 
@@ -562,7 +562,7 @@ section {
   .wp-block-gallery.has-nested-images figure.wp-block-image {
     width: 100% !important;
     max-width: 100% !important;
-    margin-bottom: 16px !important;
+    margin-bottom: 1rem !important;
   }
 }
 
@@ -578,7 +578,7 @@ section {
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
 
-@media screen and (max-width:479px) {
+@media screen and (max-width: 29.9375em) { /* 479px / 16px = 29.9375em */
 
   /* この投稿内（#main の中）の基文字サイズを指定 */
   #main,
@@ -858,14 +858,14 @@ section {
   left: 50%;
   transform: translateX(-50%);
   color: rgba(255, 255, 255, 0.65);
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   letter-spacing: 0.08em;
   white-space: nowrap;
 }
 
 /* ─── スマホ対応 ─── */
-@media (max-width: 600px) {
+@media (max-width: 37.5em) { /* 600px / 16px = 37.5em */
 
   .umiack-btn-prev,
   .umiack-btn-next {

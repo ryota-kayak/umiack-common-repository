@@ -134,9 +134,8 @@ section {
 
 /* ボックス内の段落間の余白を整える */
 .tour-info-box p {
+  font-size: 1rem;
   margin-bottom: 1.5rem;
-  font-size: 0.95rem;
-  /* 本文よりわずかに小さく */
 }
 
 /* 申し込みボタン */

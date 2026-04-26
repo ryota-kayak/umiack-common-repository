@@ -30,6 +30,7 @@
   let imageBean;
   let logoImage;
   let logo_container;
+  let parallax_container;
   let scrolling_animation;
   let delay = 0;
   let widthRatio = 1;
@@ -39,21 +40,13 @@
     imageBean = document.getElementById('img_2');
     logoImage = document.getElementById('img_1');
     logo_container = document.getElementById('logo_container');
+    parallax_container = document.getElementById('parallax_container');
     scrolling_animation = document.getElementById('scrolling_animation');
 
-    if (!imageBean || !logo_container) {
+    if (!imageBean || !logo_container || !parallax_container) {
       if (window.DEBUG) console.error('Coffee logo elements are missing in the DOM.');
       return;
     }
-
-    // Determine scale factor for small screens
-    widthRatio = window.innerWidth < COFFEE_CONFIG.SMALL_SCREEN_WIDTH
-      ? COFFEE_CONFIG.SMALL_SCREEN_SCALE
-      : 1;
-
-    // Set initial bean position
-    imageBean.style.top = COFFEE_CONFIG.BEAN_INITIAL_Y * widthRatio + 'px';
-    imageBean.style.left = COFFEE_CONFIG.BEAN_INITIAL_X * widthRatio + 'px';
 
     // Reveal logo container
     logo_container.style.opacity = 1;
@@ -62,13 +55,24 @@
   }
 
   function updateCachedLayout() {
-    if (!imageBean) return;
+    if (!imageBean || !parallax_container) return;
+
+    // Determine scale factor for small screens
+    widthRatio = window.innerWidth < COFFEE_CONFIG.SMALL_SCREEN_WIDTH
+      ? COFFEE_CONFIG.SMALL_SCREEN_SCALE
+      : 1;
+
     const w = window.innerWidth;
     const beanWidth = imageBean.getBoundingClientRect().width;
     cachedMaxAllowedX = w - beanWidth - (COFFEE_CONFIG.OFFSET_VALUE * widthRatio);
 
-    if (logo_container) {
-      delay = logo_container.getBoundingClientRect().top + window.scrollY;
+    // Using parallax_container (parent of sticky logo_container) for stable delay calculation.
+    delay = parallax_container.getBoundingClientRect().top + window.scrollY;
+
+    // Apply initial position if not scrolling yet
+    if (window.scrollY <= delay) {
+      imageBean.style.top = COFFEE_CONFIG.BEAN_INITIAL_Y * widthRatio + 'px';
+      imageBean.style.left = COFFEE_CONFIG.BEAN_INITIAL_X * widthRatio + 'px';
     }
   }
 

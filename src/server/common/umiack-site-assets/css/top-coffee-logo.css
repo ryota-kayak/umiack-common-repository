@@ -4,7 +4,7 @@
 
 #parallax_container {
 	height: 900px;
-	background: linear-gradient(to bottom, #888 0%, #888 50%, var(--color-theme-dark) 100%);
+	background: linear-gradient(to bottom, #888 0%, #888 50%, #444 100%);
 	margin: 0;
 }
 

@@ -34,14 +34,15 @@ graph TD
     end
 
     subgraph "Browser Runtime"
-        W["WordPress Page<br/>(data-tour='01 Skytree Tour')"] -->|Static Script Tag| L_URL["/common/.../js/kayak-tours-loader.js"]
+        W["WordPress Page<br/>(data-tour='01 Skytree Tour')"] -->|Static Link Tag| CSS["kayak-tour.css?v=TIMESTAMP"]
+        W -->|Static Script Tag| L_URL["/common/.../js/kayak-tours-loader.js"]
         L_URL -- "1. Fetch Loader<br/>(Always Fresh)" --> I
         I -- "2. Execute Loader" --> SL
-        SL["Loader JS"] -->|3. Load CSS?v=TIMESTAMP| CSS["kayak-tour.css"]
-        SL -->|4. Load JS?v=TIMESTAMP| S_JS["umiack-slider.js"]
-        S_JS -->|5. Fetch Manifest| G
-        G -->|6. Return Manifest| S_JS
-        S_JS -->|7. Render| J["Responsive Slider View"]
+        CSS -- "1. Style Applied Immediately<br/>(FOUC Prevention)" --> J
+        SL["Loader JS"] -->|3. Load JS?v=TIMESTAMP| S_JS["umiack-slider.js"]
+        S_JS -->|4. Fetch Manifest| G
+        G -->|5. Return Manifest| S_JS
+        S_JS -->|6. Render| J["Responsive Slider View"]
     end
 ```
 
@@ -86,9 +87,11 @@ graph TD
 *   **ティア1：Loader（読み込み指示役）**:
     *   ローダー本体（`kayak-tours-loader.js`）は、専用の[設定ファイル](file:///Users/ryota/Documents/Business/My%20business/umiack/Web/common-repository/src/server/common/umiack-site-assets/js/.htaccess)で `Cache-Control: no-cache` を設定。
     *   ブラウザは毎回必ずサーバーへ「内容の変更」を確認するため、常に最新の読み込み指示が実行されます。
-*   **ティア2：実資産（CSS/JS）**:
-    *   Loaderが読み込む `kayak-tour.css` や `umiack-slider.js` のURLに、ビルド時のタイムスタンプを自動付与（`?v=YYYYMMDDHHMM`）。
-    *   ビルドを行うだけで、エンドユーザーのキャッシュが確実にクリアされます。
+*   **ティア2：HTML内 CSSリンク (FOUC防止)**:
+    *   表示の乱れ（Flash of Unstyled Content）を防ぐため、CSSはHTML冒頭の `<link>` タグで直接読み込みます。
+    *   ビルド時に HTML内の `BUILD_VERSION` プレースホルダーをタイムスタンプに置換し、キャッシュを強制クリアします。
+*   **ティア3：実資産（JS）**:
+    *   Loaderが読み込む `umiack-slider.js` 等のURLに、ビルド時のタイムスタンプを自動付与（`?v=YYYYMMDDHHMM`）。
 
 ### 7. スライダー・コンポーネント設計 (Slider Architecture v4.0)
 複数画像のスライダーと単一画像の表示を、全く同じHTMLコードで統一的に管理します。
@@ -106,6 +109,19 @@ graph TD
 
 ### 9. ドキュメントの自律同期 (Autonomous Documentation Sync)
 大きなコード変更やアーキテクチャの修正を行った際、その動作が正常であることがユーザーによって確認された後、AI（Antigravity）は自律的に `README.md` および内部ナレッジベースを最新の状態に更新します。これにより、コードとドキュメントの乖離を永久に防ぎます。
+
+### 10. トップページ・モジュール設計 (Top Page Modular Architecture)
+UMIACK各サイト（umiack.com, umiackcoffee.com）のトップページは、保守性と拡張性を両立させるため、共通の「コア・ロジック」と差し替え可能な「ロゴ・モジュール」で構成されています。
+
+*   **共通コア (Shared Base)**:
+    *   `top-shared.js`: スクロール量（0.0〜1.0）の正規化や、モジュール登録システムを提供。
+    *   `top-backgrounds.js`: スクロールに応じた背景動画・画像の切り替え、および水滴背景アニメーションを制御。
+*   **差し替え可能なロゴ・モジュール (Logo Modules)**:
+    *   各サイト固有の演出（Umiackの浮遊ロゴ、Coffeeの回転スピナー等）は独立した JS/CSS ファイルとして管理。
+    *   `TopShared.registerLogoModule()` を介して共通コアに登録することで、共通のスクロールイベントを受け取ります。
+*   **利点**:
+    *   背景切り替えロジックを修正すると、全サイトに一括反映されます。
+    *   新しいトップページを作る際は、ロゴ部分のモジュールだけを新規作成すれば、既存の高度な背景演出をそのまま利用できます。
 
 ---
 
@@ -131,7 +147,8 @@ graph TD
 ## 🛠 運用・管理 (Management)
 
 ### WordPress への初期設定
-各ツアーページの「カスタムJavaScript」欄には、以下の **1行だけ** を設定してください。一度記述すれば、二度と変更する必要はありません。
+1.  **カスタムHTML**: `dist/wordpress/` 下の各 HTML ファイルの内容を貼り付けます。冒頭の `<link>` タグを含めることで、スタイルが即座に適用されます。
+2.  **カスタムJavaScript**: 以下の **1行だけ** を設定してください。一度記述すれば、二度と変更する必要はありません。
 
 ```javascript
 (function(d){var s=d.createElement('script');s.src='/common/umiack-site-assets/js/kayak-tours-loader.js';s.defer=true;d.head.appendChild(s);})(document);

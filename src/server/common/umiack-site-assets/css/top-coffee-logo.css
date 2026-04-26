@@ -4,7 +4,7 @@
 
 #parallax_container {
 	height: 900px;
-	background-color: white;
+	background: linear-gradient(to bottom, #888 0%, #888 50%, var(--color-theme-dark) 100%);
 	margin: 0;
 }
 
@@ -30,7 +30,8 @@
 	margin-right: auto;
 }
 
-#img_2 { /* 豆 */
+#img_2 {
+	/* 豆 */
 	top: 339px;
 	left: -97px;
 	right: 0;
@@ -43,9 +44,11 @@
 	#logo_container {
 		height: 313px;
 	}
+
 	#img_1 {
 		width: 250px;
 	}
+
 	#img_2 {
 		width: 21px;
 	}

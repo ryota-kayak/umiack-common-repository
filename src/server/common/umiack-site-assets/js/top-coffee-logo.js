@@ -55,7 +55,7 @@
   }
 
   function updateCachedLayout() {
-    if (!imageBean || !parallax_container || !logoImage) return;
+    if (!imageBean || !parallax_container) return;
 
     // Determine scale factor for small screens
     widthRatio = window.innerWidth < COFFEE_CONFIG.SMALL_SCREEN_WIDTH
@@ -69,8 +69,11 @@
     // Using parallax_container (parent of sticky logo_container) for stable delay calculation.
     delay = parallax_container.getBoundingClientRect().top + window.scrollY;
 
-    // Apply initial position
-    applyPosition(0, 0);
+    // Apply initial position if not scrolling yet
+    if (window.scrollY <= delay) {
+      imageBean.style.top = COFFEE_CONFIG.BEAN_INITIAL_Y * widthRatio + 'px';
+      imageBean.style.left = COFFEE_CONFIG.BEAN_INITIAL_X * widthRatio + 'px';
+    }
   }
 
   function onLayoutChange() {
@@ -78,63 +81,38 @@
   }
 
   function update(scrollPosition) {
-    if (!imageBean || !logoImage) return;
+    if (!imageBean || scrollPosition <= delay) return;
 
-    const adjustedScroll = Math.max(0, scrollPosition - delay);
-    applyPosition(adjustedScroll, scrollPosition);
-  }
+    const adjustedScroll = scrollPosition - delay;
 
-  function applyPosition(adjustedScroll, rawScroll) {
-    const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight / 2;
-
-    // --- Base Logo (img_1) positioning ---
-    // In the old CSS, img_1 was centered in a 500px (PC) / 313px (SP) container.
-    // To maintain visual consistency, we treat that box as our reference.
-    const refBoxHeight = (window.innerWidth < COFFEE_CONFIG.SMALL_SCREEN_WIDTH ? 313 : 500);
-    const originY = centerY - (refBoxHeight / 2);
-    
-    const baseW = logoImage.getBoundingClientRect().width;
-    const baseH = logoImage.getBoundingClientRect().height;
-    const baseTranslateX = centerX - (baseW / 2);
-    const baseTranslateY = originY + (refBoxHeight / 2) - (baseH / 2);
-    
-    logoImage.style.transform = `translate3d(${baseTranslateX}px, ${baseTranslateY}px, 0)`;
-
-    // --- Bean (img_2) movement ---
-    
-    // Horizontal movement (power curve deceleration)
+    // --- Horizontal movement (power curve deceleration) ---
     let horizontalMovement = COFFEE_CONFIG.BEAN_INITIAL_X + adjustedScroll ** COFFEE_CONFIG.HORIZONTAL_POWER;
     let displayedX = horizontalMovement * widthRatio;
     let effectiveX = Math.min(displayedX, cachedMaxAllowedX);
-    
-    // The calculation of effectiveX assumes a relative offset from center.
-    const beanTranslateX = centerX + effectiveX;
+    imageBean.style.left = effectiveX + 'px';
 
-    // Vertical bounce (gravity + energy loss)
+    // --- Horizontal fade-out near right edge ---
+    AnimationHelpers.applyLinearFade(
+      imageBean,
+      effectiveX,
+      cachedMaxAllowedX - COFFEE_CONFIG.HORIZONTAL_FADE_RANGE,
+      cachedMaxAllowedX
+    );
+
+    // --- Vertical bounce (gravity + energy loss) ---
     const quadrant = (adjustedScroll / COFFEE_CONFIG.BOUNCE_FACTOR) / (Math.PI / 2);
     const energyLoss = Math.floor((quadrant + 1) / 2);
     const cosWave = Math.cos(adjustedScroll / COFFEE_CONFIG.BOUNCE_FACTOR);
     const reboundWithLoss = Math.abs(cosWave) * (1 / (COFFEE_CONFIG.ENERGY_LOSS_BASE ** energyLoss));
     let verticalMovement = COFFEE_CONFIG.BEAN_INITIAL_Y + ((1 - reboundWithLoss) * COFFEE_CONFIG.BOUNCE_HEIGHT);
-    const beanTranslateY = originY + (verticalMovement * widthRatio);
+    imageBean.style.top = verticalMovement * widthRatio + 'px';
 
-    const rotation = adjustedScroll / COFFEE_CONFIG.ROTATION_DIVISOR;
-    
-    // Combine everything into a single GPU-accelerated transform
-    imageBean.style.transform = `translate3d(${beanTranslateX}px, ${beanTranslateY}px, 0) rotate(${rotation}rad)`;
-
-    // --- Horizontal fade-out near right edge ---
-    AnimationHelpers.applyLinearFade(
-      imageBean,
-      beanTranslateX,
-      centerX + cachedMaxAllowedX - COFFEE_CONFIG.HORIZONTAL_FADE_RANGE,
-      centerX + cachedMaxAllowedX
-    );
+    // --- Rotation ---
+    imageBean.style.transform = 'rotate(' + adjustedScroll / COFFEE_CONFIG.ROTATION_DIVISOR + 'rad)';
 
     // --- Scrolling Spinner Rotation ---
     if (scrolling_animation && scrolling_animation.classList.contains('scrolling-spinner')) {
-      scrolling_animation.style.transform = `rotate(${rawScroll / 100}rad)`;
+      scrolling_animation.style.transform = 'rotate(' + scrollPosition / 100 + 'rad)';
     }
   }
 

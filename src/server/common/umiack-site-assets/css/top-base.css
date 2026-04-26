@@ -35,6 +35,10 @@
 	margin: 0;
 }
 
+.main_article > p:empty {
+	display: none !important;
+}
+
 div,
 .article h2 {
 	margin: 0;

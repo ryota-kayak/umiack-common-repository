@@ -186,7 +186,8 @@
 #mountain-coffee-roast,
 #kayak-guide,
 #train {
-	background-size: auto 100%;
+	background-size: cover;
+	background-position: center bottom;
 	background-color: #2a3440;
 }
 

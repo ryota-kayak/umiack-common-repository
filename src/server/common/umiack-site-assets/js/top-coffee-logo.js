@@ -115,6 +115,24 @@
     return logoImage || document.getElementById('img_1');
   }
 
+  // --- Hijack animateWaterDrop for Coffee site ---
+  // top-backgrounds.js calls this for the scrolling animation.
+  // We override it here to keep the spinner in place and rotate without distortion.
+  const originalAnimate = shared.animateWaterDrop;
+  shared.animateWaterDrop = function (params) {
+    if (params.dropElement && params.dropElement.id === 'scrolling_animation') {
+      const { dropElement, t } = params;
+      // Position: fixed at 10vw, 10vh (as per original coffee site design)
+      // Rotation: scrollPosition / 100 rad (original logic). t = scrollPosition / 300.
+      const rotationRad = (t * 300) / 100;
+      dropElement.style.transform = `translate3d(10vw, 10vh, 0) rotate(${rotationRad}rad)`;
+      // Neutralize filters/distortion applied by resizeWaterdrop/animateWaterDrop
+      dropElement.style.filter = 'none';
+      return;
+    }
+    if (originalAnimate) originalAnimate(params);
+  };
+
   shared.runtime.registerLogoModule({
     init,
     onLayoutChange,

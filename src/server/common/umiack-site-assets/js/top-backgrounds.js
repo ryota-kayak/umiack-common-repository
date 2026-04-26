@@ -210,18 +210,20 @@
     const dropWidth = logoMetrics?.initialDropWidth ?? CONFIG.DROPS_WIDTH;
     const logoRatio = logoMetrics?.logoRatio ?? 1;
 
-    animateWaterDrop({
-      dropElement: scrolling_animation,
-      svgRimLight: scrolling_drop_svg_rimLight,
-      svgSpotLight: scrolling_drop_svg_spotLight,
-      dropWidth,
-      scale: scale_scrolling_drop,
-      effectiveX: leftFromVW,
-      effectiveY: topFromVH,
-      rotationDegree: CONFIG.WOBBLE_ROTATION_DEG_SCROLLING + CONFIG.WOBBLE_ROTATION_SPEED_SCROLLING * t,
-      t,
-      logoRatio,
-    });
+    if (!scrolling_animation.classList.contains('scrolling-spinner')) {
+      animateWaterDrop({
+        dropElement: scrolling_animation,
+        svgRimLight: scrolling_drop_svg_rimLight,
+        svgSpotLight: scrolling_drop_svg_spotLight,
+        dropWidth,
+        scale: scale_scrolling_drop,
+        effectiveX: leftFromVW,
+        effectiveY: topFromVH,
+        rotationDegree: CONFIG.WOBBLE_ROTATION_DEG_SCROLLING + CONFIG.WOBBLE_ROTATION_SPEED_SCROLLING * t,
+        t,
+        logoRatio,
+      });
+    }
   }
 
   shared.runtime.registerBackgroundModule({

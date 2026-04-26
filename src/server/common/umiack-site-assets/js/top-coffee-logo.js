@@ -30,6 +30,7 @@
   let imageBean;
   let logoImage;
   let logo_container;
+  let scrolling_animation;
   let delay = 0;
   let widthRatio = 1;
   let cachedMaxAllowedX = 0;
@@ -38,6 +39,7 @@
     imageBean = document.getElementById('img_2');
     logoImage = document.getElementById('img_1');
     logo_container = document.getElementById('logo_container');
+    scrolling_animation = document.getElementById('scrolling_animation');
 
     if (!imageBean || !logo_container) {
       if (window.DEBUG) console.error('Coffee logo elements are missing in the DOM.');
@@ -103,6 +105,11 @@
 
     // --- Rotation ---
     imageBean.style.transform = 'rotate(' + adjustedScroll / COFFEE_CONFIG.ROTATION_DIVISOR + 'rad)';
+
+    // --- Scrolling Spinner Rotation ---
+    if (scrolling_animation && scrolling_animation.classList.contains('scrolling-spinner')) {
+      scrolling_animation.style.transform = 'rotate(' + scrollPosition / 100 + 'rad)';
+    }
   }
 
   function getMetrics() {
@@ -114,24 +121,6 @@
   function getObservedElement() {
     return logoImage || document.getElementById('img_1');
   }
-
-  // --- Hijack animateWaterDrop for Coffee site ---
-  // top-backgrounds.js calls this for the scrolling animation.
-  // We override it here to keep the spinner in place and rotate without distortion.
-  const originalAnimate = shared.animateWaterDrop;
-  shared.animateWaterDrop = function (params) {
-    if (params.dropElement && params.dropElement.id === 'scrolling_animation') {
-      const { dropElement, t } = params;
-      // Position: fixed at 10vw, 10vh (as per original coffee site design)
-      // Rotation: scrollPosition / 100 rad (original logic). t = scrollPosition / 300.
-      const rotationRad = (t * 300) / 100;
-      dropElement.style.transform = `translate3d(10vw, 10vh, 0) rotate(${rotationRad}rad)`;
-      // Neutralize filters/distortion applied by resizeWaterdrop/animateWaterDrop
-      dropElement.style.filter = 'none';
-      return;
-    }
-    if (originalAnimate) originalAnimate(params);
-  };
 
   shared.runtime.registerLogoModule({
     init,

@@ -3,48 +3,49 @@
    ========================================= */
 
 #parallax_container {
-	height: 900px;
+	position: relative;
+	z-index: 100;
+	width: 100vw;
 	background: linear-gradient(to bottom, #888 0%, #888 50%, #444 100%);
 	margin: 0;
 }
 
-#logo_container {
-	position: sticky;
-	top: 100px;
-	height: 500px;
-	overflow: visible;
-	opacity: 0;
-	transition: opacity 1s;
+/* PC: ≥480px - approximately 900px height at 1920px width */
+@media (min-width: 480px) {
+	#parallax_container {
+		aspect-ratio: 32 / 15;
+	}
 }
+
+/* Mobile: ≤479px - approximately 313px height at 479px width */
+@media (max-width: 479px) {
+	#parallax_container {
+		aspect-ratio: 32 / 21;
+	}
+}
+
+
 
 #logo_container img {
 	position: absolute;
+	will-change: transform;
 }
 
 #img_1 {
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	margin-left: auto;
-	margin-right: auto;
+	/* Logo base */
+	position: absolute;
+	z-index: 1;
 }
 
 #img_2 {
-	/* 豆 */
-	top: 339px;
-	left: -97px;
-	right: 0;
-	bottom: 0;
-	margin-left: auto;
-	margin-right: auto;
+	/* Bean */
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 2;
 }
 
 @media screen and (max-width: 479px) {
-	#logo_container {
-		height: 313px;
-	}
-
 	#img_1 {
 		width: 250px;
 	}

@@ -34,6 +34,16 @@ for TARGET_FILE in "${LOADER_FILES[@]}"; do
   fi
 done
 
+# Also target all HTML files to replace BUILD_VERSION in <link> or other tags
+find dist -name "*.html" -type f | while IFS= read -r file; do
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    sed -i '' "s/BUILD_VERSION/$TIMESTAMP/g" "$file"
+  else
+    sed -i "s/BUILD_VERSION/$TIMESTAMP/g" "$file"
+  fi
+done
+echo "  Version injected into HTML files."
+
 echo "🎨 Optimizing CSS with Lightning CSS..."
 find dist -name "*.css" -type f | while IFS= read -r file; do
   echo "  Minifying: $file"

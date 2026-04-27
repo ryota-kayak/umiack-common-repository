@@ -1,8 +1,10 @@
-# UMIACK: Disable caching for all loader scripts to ensure instant updates
+# UMIACK: Force fresh loader scripts (Safari cache fix)
 <FilesMatch "loader.*\.js$">
     <IfModule mod_headers.c>
-        Header set Cache-Control "no-cache, no-store, must-revalidate"
-        Header set Pragma "no-cache"
-        Header set Expires 0
+        Header always set Cache-Control "no-cache, no-store, must-revalidate, proxy-revalidate, max-age=0"
+        Header always set Pragma "no-cache"
+        Header always set Expires "Wed, 11 Jan 1984 05:00:00 GMT"
+        Header unset ETag
     </IfModule>
+    FileETag None
 </FilesMatch>

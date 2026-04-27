@@ -17,10 +17,8 @@
     BEAN_INITIAL_X: -48,
     BEAN_INITIAL_Y: 339,
     BOUNCE_FACTOR: 50,
-    // HORIZONTAL_FADE_RANGE: 200,
-    HORIZONTAL_FADE_RANGE: 100,
-    // OFFSET_VALUE: 100,
-    OFFSET_VALUE: 50,
+    HORIZONTAL_FADE_RANGE: 100, // フェードアウトを開始してから完全に消える（停止位置）までの移動距離
+    OFFSET_VALUE: 50, // 豆が画面の右端で止まるときの余裕値
     SMALL_SCREEN_SCALE: 0.625,
     SMALL_SCREEN_WIDTH: 479,
     ROTATION_DIVISOR: 20,
@@ -67,15 +65,11 @@
 
     const w = window.innerWidth;
     const beanWidth = imageBean.getBoundingClientRect().width;
-    // cachedMaxAllowedX = w - beanWidth - (COFFEE_CONFIG.OFFSET_VALUE * widthRatio);
     cachedMaxAllowedX = (w / 2) - (beanWidth / 2) - (COFFEE_CONFIG.OFFSET_VALUE * widthRatio);
-    // Using parallax_container (parent of sticky logo_container) for stable delay calculation.
     delay = parallax_container.getBoundingClientRect().top + window.scrollY;
 
     // Apply initial position if not scrolling yet
     if (window.scrollY <= delay) {
-      // imageBean.style.top = COFFEE_CONFIG.BEAN_INITIAL_Y * widthRatio + 'px';
-      // imageBean.style.left = COFFEE_CONFIG.BEAN_INITIAL_X * widthRatio + 'px';
       beanPosition = { x: COFFEE_CONFIG.BEAN_INITIAL_X * widthRatio, y: COFFEE_CONFIG.BEAN_INITIAL_Y * widthRatio };
       imageBean.style.transform = `translate(${beanPosition.x}px, ${beanPosition.y}px) rotate(0rad)`;
       imageBean.style.opacity = 1;
@@ -102,14 +96,12 @@
     let horizontalMovement = COFFEE_CONFIG.BEAN_INITIAL_X + adjustedScroll ** COFFEE_CONFIG.HORIZONTAL_POWER;
     let displayedX = horizontalMovement * widthRatio;
     let effectiveX = Math.min(displayedX, cachedMaxAllowedX);
-    // imageBean.style.left = effectiveX + 'px';
     beanPosition.x = effectiveX;
 
     // --- Horizontal fade-out near right edge ---
     AnimationHelpers.applyLinearFade(
       imageBean,
       effectiveX,
-      // cachedMaxAllowedX - COFFEE_CONFIG.HORIZONTAL_FADE_RANGE,
       cachedMaxAllowedX - COFFEE_CONFIG.HORIZONTAL_FADE_RANGE * widthRatio,
       cachedMaxAllowedX
     );
@@ -121,7 +113,6 @@
     const reboundWithLoss = Math.abs(cosWave) * (1 / (COFFEE_CONFIG.ENERGY_LOSS_BASE ** energyLoss));
     let verticalMovement = COFFEE_CONFIG.BEAN_INITIAL_Y + ((1 - reboundWithLoss) * COFFEE_CONFIG.BOUNCE_HEIGHT);
     beanPosition.y = verticalMovement * widthRatio;
-    // imageBean.style.top = verticalMovement * widthRatio + 'px';
 
     // --- Rotation ---
     imageBean.style.transform = 'translate(' + beanPosition.x + 'px, ' + beanPosition.y + 'px) rotate(' + adjustedScroll / COFFEE_CONFIG.ROTATION_DIVISOR + 'rad)';

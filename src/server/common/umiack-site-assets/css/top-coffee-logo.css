@@ -32,12 +32,15 @@
 
 #img_2 {
 	/* 豆 */
-	top: 339px;
-	left: -97px;
+	/* top: 339px; */
+	/* left: -97px; */
+	top: 0;
+	left: 0;
 	right: 0;
 	bottom: 0;
 	margin-left: auto;
 	margin-right: auto;
+	opacity: 0;
 }
 
 @media screen and (max-width: 479px) {

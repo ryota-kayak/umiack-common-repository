@@ -35,6 +35,7 @@
   let delay = 0;
   let widthRatio = 1;
   let cachedMaxAllowedX = 0;
+  let beanPosition = { x: 0, y: 0 };
 
   function init() {
     imageBean = document.getElementById('img_2');
@@ -71,8 +72,11 @@
 
     // Apply initial position if not scrolling yet
     if (window.scrollY <= delay) {
-      imageBean.style.top = COFFEE_CONFIG.BEAN_INITIAL_Y * widthRatio + 'px';
-      imageBean.style.left = COFFEE_CONFIG.BEAN_INITIAL_X * widthRatio + 'px';
+      // imageBean.style.top = COFFEE_CONFIG.BEAN_INITIAL_Y * widthRatio + 'px';
+      // imageBean.style.left = COFFEE_CONFIG.BEAN_INITIAL_X * widthRatio + 'px';
+      beanPosition = { x: COFFEE_CONFIG.BEAN_INITIAL_X * widthRatio, y: COFFEE_CONFIG.BEAN_INITIAL_Y * widthRatio };
+      imageBean.style.transform = `translate(${beanPosition.x}px, ${beanPosition.y}px) rotate(0rad)`;
+      imageBean.style.opacity = 1;
     }
   }
 
@@ -89,7 +93,8 @@
     let horizontalMovement = COFFEE_CONFIG.BEAN_INITIAL_X + adjustedScroll ** COFFEE_CONFIG.HORIZONTAL_POWER;
     let displayedX = horizontalMovement * widthRatio;
     let effectiveX = Math.min(displayedX, cachedMaxAllowedX);
-    imageBean.style.left = effectiveX + 'px';
+    // imageBean.style.left = effectiveX + 'px';
+    beanPosition.x = effectiveX;
 
     // --- Horizontal fade-out near right edge ---
     AnimationHelpers.applyLinearFade(
@@ -105,10 +110,11 @@
     const cosWave = Math.cos(adjustedScroll / COFFEE_CONFIG.BOUNCE_FACTOR);
     const reboundWithLoss = Math.abs(cosWave) * (1 / (COFFEE_CONFIG.ENERGY_LOSS_BASE ** energyLoss));
     let verticalMovement = COFFEE_CONFIG.BEAN_INITIAL_Y + ((1 - reboundWithLoss) * COFFEE_CONFIG.BOUNCE_HEIGHT);
-    imageBean.style.top = verticalMovement * widthRatio + 'px';
+    beanPosition.y = verticalMovement * widthRatio;
+    // imageBean.style.top = verticalMovement * widthRatio + 'px';
 
     // --- Rotation ---
-    imageBean.style.transform = 'rotate(' + adjustedScroll / COFFEE_CONFIG.ROTATION_DIVISOR + 'rad)';
+    imageBean.style.transform = 'translate(' + beanPosition.x + 'px, ' + beanPosition.y + 'px) rotate(' + adjustedScroll / COFFEE_CONFIG.ROTATION_DIVISOR + 'rad)';
 
     // --- Scrolling Spinner Rotation ---
     if (scrolling_animation && scrolling_animation.classList.contains('scrolling-spinner')) {

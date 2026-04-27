@@ -65,8 +65,8 @@
 
     const w = window.innerWidth;
     const beanWidth = imageBean.getBoundingClientRect().width;
-    cachedMaxAllowedX = w - beanWidth - (COFFEE_CONFIG.OFFSET_VALUE * widthRatio);
-
+    // cachedMaxAllowedX = w - beanWidth - (COFFEE_CONFIG.OFFSET_VALUE * widthRatio);
+    cachedMaxAllowedX = (w / 2) - (beanWidth / 2) - (COFFEE_CONFIG.OFFSET_VALUE * widthRatio);
     // Using parallax_container (parent of sticky logo_container) for stable delay calculation.
     delay = parallax_container.getBoundingClientRect().top + window.scrollY;
 

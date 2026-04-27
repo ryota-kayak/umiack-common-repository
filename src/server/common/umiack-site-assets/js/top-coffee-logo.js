@@ -86,7 +86,14 @@
   }
 
   function update(scrollPosition) {
-    if (!imageBean || scrollPosition <= delay) return;
+    if (!imageBean) return;
+
+    // スクロールが開始位置より上の場合
+    if (scrollPosition <= delay) {
+      // 初期位置に戻して終了
+      imageBean.style.transform = `translate(${COFFEE_CONFIG.BEAN_INITIAL_X * widthRatio}px, ${COFFEE_CONFIG.BEAN_INITIAL_Y * widthRatio}px) rotate(0rad)`;
+      return;
+    }
 
     const adjustedScroll = scrollPosition - delay;
 

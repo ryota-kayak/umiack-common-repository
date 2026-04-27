@@ -17,7 +17,8 @@
     BEAN_INITIAL_X: -48,
     BEAN_INITIAL_Y: 339,
     BOUNCE_FACTOR: 50,
-    HORIZONTAL_FADE_RANGE: 200,
+    // HORIZONTAL_FADE_RANGE: 200,
+    HORIZONTAL_FADE_RANGE: 100,
     OFFSET_VALUE: 100,
     SMALL_SCREEN_SCALE: 0.625,
     SMALL_SCREEN_WIDTH: 479,
@@ -100,7 +101,8 @@
     AnimationHelpers.applyLinearFade(
       imageBean,
       effectiveX,
-      cachedMaxAllowedX - COFFEE_CONFIG.HORIZONTAL_FADE_RANGE,
+      // cachedMaxAllowedX - COFFEE_CONFIG.HORIZONTAL_FADE_RANGE,
+      cachedMaxAllowedX - COFFEE_CONFIG.HORIZONTAL_FADE_RANGE * widthRatio,
       cachedMaxAllowedX
     );
 
